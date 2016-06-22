@@ -1,3 +1,39 @@
-<p>
-  questions-screen works!
-</p>
+<form [ngFormModel]="addQuestionForm" (ngSubmit)="onAddQuestionFormSubmit()">
+  <div class="input">
+    <label for="question">Title</label>
+    <input type="text"
+           [ngFormControl]="addQuestionForm.find('question')">
+  </div>
+
+  <radio-group [(ngModel)]="correctAnswer">
+    <div class="input">
+      <label for="answer-1">Answer 1</label>
+      <input type="text" name="answer1" [ngFormControl]="addQuestionForm.find('answer1')">
+      <input type="radio" value="1">
+    </div>
+
+    <div class="input">
+      <label for="answer-2">Answer 2</label>
+      <input type="text" name="answer2" [ngFormControl]="addQuestionForm.find('answer2')">
+      <input type="radio" value="2">
+    </div>
+
+    <div class="input">
+      <label for="answer-3">Answer 3</label>
+      <input type="text" name="answer3" [ngFormControl]="addQuestionForm.find('answer3')">
+      <input type="radio" value="3">
+    </div>
+
+    <div class="input">
+      <label for="answer-4">Answer 4</label>
+      <input type="text" name="answer4" [ngFormControl]="addQuestionForm.find('answer4')">
+      <input type="radio" value="4">
+    </div>
+  </radio-group>
+
+  <input
+    [disabled]="!addQuestionForm.valid || correctAnswer == undefined"
+    type="submit"
+    value="Add New Question"
+  />
+</form>

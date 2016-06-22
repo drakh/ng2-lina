@@ -14,7 +14,7 @@ import { RulesScreenComponent } from './rules-screen.component';
 
 describe('Component: RulesScreen', () => {
   it('should create an instance', () => {
-    let component = new RulesScreenComponent();
+    let component = new RulesScreenComponent(null);
     expect(component).toBeTruthy();
   });
 });

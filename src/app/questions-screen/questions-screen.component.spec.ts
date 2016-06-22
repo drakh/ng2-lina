@@ -14,7 +14,7 @@ import { QuestionsScreenComponent } from './questions-screen.component';
 
 describe('Component: QuestionsScreen', () => {
   it('should create an instance', () => {
-    let component = new QuestionsScreenComponent();
+    let component = new QuestionsScreenComponent(null, null);
     expect(component).toBeTruthy();
   });
 });

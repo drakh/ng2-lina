@@ -14,7 +14,7 @@ import { PrizesScreenComponent } from './prizes-screen.component';
 
 describe('Component: PrizesScreen', () => {
   it('should create an instance', () => {
-    let component = new PrizesScreenComponent();
+    let component = new PrizesScreenComponent(null);
     expect(component).toBeTruthy();
   });
 });

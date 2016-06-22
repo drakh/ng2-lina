@@ -7,10 +7,12 @@
  **********************************************************************************************/
 /** Map relative paths to URLs. */
 const map: any = {
+  "ng2-radio-group": "vendor/ng2-radio-group"
 };
 
 /** User packages configuration. */
 const packages: any = {
+  "ng2-radio-group": { "main": "index.js", "defaultExtension": "js" }
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -40,6 +42,8 @@ const barrels: string[] = [
   'app/menu-screen',
   'app/results',
   'app/results-screen',
+  'app/question',
+  'app/signin-screen',
   /** @cli-barrel */
 ];
 
