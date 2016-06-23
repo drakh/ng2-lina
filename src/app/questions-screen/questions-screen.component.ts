@@ -3,8 +3,6 @@ import { FormBuilder, ControlGroup, Validators } from "@angular/common";
 import { RADIO_GROUP_DIRECTIVES } from "ng2-radio-group";
 import { DataService } from '../shared/';
 
-console.log(RADIO_GROUP_DIRECTIVES);
-
 @Component({
   moduleId: module.id,
   selector: 'app-questions-screen',
@@ -24,6 +22,7 @@ export class QuestionsScreenComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+
     this.addQuestionForm = this._fb.group({
       question: ['', Validators.required],
       answer1: ['', Validators.required],
@@ -36,21 +35,34 @@ export class QuestionsScreenComponent implements OnInit {
   onAddQuestionFormSubmit() {
     console.log('Submitting form.');
 
-
      this._dataService.postQuestionData(this.addQuestionForm.value)
       .subscribe(
-        result => this.saveCorrectAnswer(result.name),
+        questionId => this.onSaveCorrectAnswer(questionId),
         error => console.error(error)
       );
   }
 
-  saveCorrectAnswer(name: string) {
-    console.log(`Sending correct answer for ${name}: ${this.correctAnswer}`);
-    this._dataService.postCorrectAnswer(name, parseInt(this.correctAnswer))
-      .subscribe(
-        result => console.log(result),
-        error => console.error(error)
-      );
+  onSaveCorrectAnswer(questionId: string) {
+    console.log(`Sending correct answer for ${questionId}: ${this.correctAnswer}`);
+    this._dataService.postCorrectAnswer(questionId, parseInt(this.correctAnswer))
+      .subscribe({
+        error: error => console.error(error)
+      });
+  }
+
+  onCheckAnswer(questionId: string, answer: number) {
+    this._dataService.checkAnswer(questionId, answer)
+    .subscribe({
+      next: (result) => {
+        if(result) {
+          console.log('Correct answer');
+        }
+        else {
+          console.log('NOT Correct answer');
+        }
+      },
+      complete: () => console.log('checkAnswer complete.')
+    });
   }
 
 }

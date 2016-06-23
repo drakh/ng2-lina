@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { ROUTER_DIRECTIVES } from '@angular/router';
+import { AuthService } from "./shared/";
 
 @Component({
   moduleId: module.id,
@@ -8,6 +9,6 @@ import { ROUTER_DIRECTIVES } from '@angular/router';
   styleUrls: ['app.component.css'],
   directives: [ROUTER_DIRECTIVES]
 })
-export class AppComponent {
+export class AppComponent  {
   constructor() {}
 }

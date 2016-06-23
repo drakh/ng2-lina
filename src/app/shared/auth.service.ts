@@ -1,24 +1,37 @@
-import {Injectable, EventEmitter} from "@angular/core";
-import {User} from "./user.interface";
+import { Injectable, EventEmitter } from "@angular/core";
+import { DataService } from "./data.service";
+import { User } from "./user.model";
+import  'rxjs/Rx';
+import {Observable} from "rxjs/Observable";
 declare var firebase: any;
 
 @Injectable()
 export class AuthService {
   private _userLoggedOut = new EventEmitter<any>();
+  private user: User
 
-  signinUser(user: User) {
-     firebase.auth()
-      .signInWithEmailAndPassword(user.email, user.password)
-        .then(result => {
-          result.getToken().then(
-            token => localStorage.setItem('token', token)
-          );
-        })
-        .catch(error => {
-          if (error) {
-            console.error(new Error(`${error.code}: ${error.message}`));
-          }
-        });
+  constructor(private _dataService: DataService) {}
+
+  signinUserFB() {
+    return new Observable(observer => {
+      const fbLoginProvider = new firebase.auth.FacebookAuthProvider();
+      firebase.auth().signInWithPopup(fbLoginProvider).then((result) => {
+        localStorage.setItem('token', result.credential.accessToken);
+
+        this.user = new User(
+          result.user.uid,
+          result.user.displayName,
+          result.user.email,
+          result.user.photoURL
+        );
+
+        observer.next();
+
+      })
+      .catch(function(error) {
+        observer.error(new Error(`${error.code}: ${error.message}`));
+      });
+    });
   }
 
   logout() {
@@ -31,7 +44,17 @@ export class AuthService {
   }
 
   isAuthenticated(): boolean {
-    return localStorage.getItem('token') !== null;
+    return (localStorage.getItem('token') !== null && this.user !== undefined);
+  }
+
+  getLoggedUserDisplayName(): string {
+    console.log(this.user);
+    if( this.isAuthenticated() && this.user.getDisplayName() ) {
+      return this.user.getDisplayName();
+    }
+    else {
+      return '';
+    }
   }
 
 }

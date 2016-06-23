@@ -2,16 +2,18 @@ import { bootstrap } from '@angular/platform-browser-dynamic';
 import { enableProdMode } from '@angular/core';
 import { HTTP_PROVIDERS } from '@angular/http';
 import { AppComponent, environment, APP_ROUTER_PROVIDERS } from './app/';
-import { AuthService, DataService } from './app/shared/';
+import { AuthGuard, AuthService, DataService } from './app/shared/';
 
 if (environment.production) {
   enableProdMode();
 }
 
+const AUTH_PROVIDERS = [AuthGuard, AuthService];
+
 bootstrap(AppComponent, [
   APP_ROUTER_PROVIDERS,
   HTTP_PROVIDERS,
-  AuthService,
+  AUTH_PROVIDERS,
   DataService
 ])
 .catch(err => console.error(err));

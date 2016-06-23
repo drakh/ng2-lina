@@ -37,3 +37,9 @@
     value="Add New Question"
   />
 </form>
+
+<form (ngSubmit)="onCheckAnswer(questionId.value, answer.value)">
+  <input type="text" #questionId>
+  <input type="number" #answer>
+  <input type="submit">
+</form>
