@@ -1,0 +1,11 @@
+<div>{{remainingTime}}</div>
+
+<div *ngIf="question" data-question-id="question?id">
+  <h2>{{question?.question}}</h2>
+  <ul>
+    <li (click)="onCheckAnswer(1)">{{question?.answer1}}</li>
+    <li (click)="onCheckAnswer(2)">{{question?.answer2}}</li>
+    <li (click)="onCheckAnswer(3)">{{question?.answer3}}</li>
+    <li (click)="onCheckAnswer(4)">{{question?.answer4}}</li>
+  </ul>
+</div>

@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 
 @Component({
   moduleId: module.id,
-  selector: 'app-results-screen',
+  selector: 'lina-results-screen',
   templateUrl: 'results-screen.component.html',
   styleUrls: ['results-screen.component.css']
 })

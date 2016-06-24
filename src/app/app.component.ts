@@ -4,7 +4,7 @@ import { AuthService } from "./shared/";
 
 @Component({
   moduleId: module.id,
-  selector: 'app-root',
+  selector: 'lina-root',
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.css'],
   directives: [ROUTER_DIRECTIVES]

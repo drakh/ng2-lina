@@ -5,9 +5,13 @@
  * User Configuration.
  **********************************************************************************************/
 /** Map relative paths to URLs. */
-var map = {};
+var map = {
+    "ng2-radio-group": "vendor/ng2-radio-group"
+};
 /** User packages configuration. */
-var packages = {};
+var packages = {
+    "ng2-radio-group": { "main": "index.js", "defaultExtension": "js" }
+};
 ////////////////////////////////////////////////////////////////////////////////////////////////
 /***********************************************************************************************
  * Everything underneath this line is managed by the CLI.
@@ -33,6 +37,8 @@ var barrels = [
     'app/menu-screen',
     'app/results',
     'app/results-screen',
+    'app/question',
+    'app/signin-screen',
 ];
 var cliSystemConfigPackages = {};
 barrels.forEach(function (barrelName) {

@@ -1,3 +1,4 @@
 export * from './auth.service';
 export * from './auth.guard';
 export * from './data.service';
+export * from './question.model';

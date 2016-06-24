@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 
 @Component({
   moduleId: module.id,
-  selector: 'app-rules-screen',
+  selector: 'lina-rules-screen',
   templateUrl: 'rules-screen.component.html',
   styleUrls: ['rules-screen.component.css']
 })

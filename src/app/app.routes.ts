@@ -5,7 +5,6 @@ import { RulesScreenComponent } from './rules-screen/';
 import { PrizesScreenComponent } from './prizes-screen/';
 import { QuestionsScreenComponent } from './questions-screen/';
 import { ResultsScreenComponent } from './results-screen/';
-import { SigninScreenComponent } from './signin-screen/';
 import { AuthGuard } from './shared/auth.guard/';
 
 export const routes: RouterConfig = [
@@ -14,8 +13,7 @@ export const routes: RouterConfig = [
   { path: 'pravidla', component: RulesScreenComponent, canActivate: [AuthGuard] },
   { path: 'vyhry', component: PrizesScreenComponent, canActivate: [AuthGuard] },
   { path: 'kviz', component: QuestionsScreenComponent, canActivate: [AuthGuard] },
-  { path: 'vysledky', component: ResultsScreenComponent, canActivate: [AuthGuard] },
-  { path: 'sign-in', component: SigninScreenComponent, canActivate: [AuthGuard] }
+  { path: 'vysledky', component: ResultsScreenComponent, canActivate: [AuthGuard] }
 ];
 
 export const APP_ROUTER_PROVIDERS = [

@@ -2,6 +2,8 @@ import { Injectable } from "@angular/core";
 import { Http, Headers } from "@angular/http";
 import  'rxjs/Rx';
 import {Observable} from "rxjs/Observable";
+
+declare var _: any;
 declare var firebase: any;
 
 @Injectable()
@@ -12,8 +14,29 @@ export class DataService {
     this.database = firebase.database();
   }
 
-  postQuestionData(data: any): Observable<any> {
+  getAllQuestionsData(): Observable<any> {
+    return new Observable(observer => {
+      this.database.ref(`questions`).on('value', (snapshot) => {
 
+        _.each(snapshot.val(), (question, key) => {
+          observer.next([key, question]);
+        });
+
+        observer.complete();
+      });
+    });
+  }
+
+  getAllAnswersData(): Observable<any> {
+    return new Observable(observer => {
+      this.database.ref(`answers`).once('value')
+        .then((snapshot) => {
+          observer.next(snapshot.val());
+        })
+    });
+  }
+
+  postQuestionData(data: any): Observable<any> {
     return new Observable(observer => {
       var newQuestionKey = this.database.ref().child('questions').push().key;
       this.database.ref(`questions/${newQuestionKey}`).set(data)

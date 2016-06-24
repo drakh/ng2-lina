@@ -1,14 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, ControlGroup, Validators } from "@angular/common";
 import { RADIO_GROUP_DIRECTIVES } from "ng2-radio-group";
-import { DataService } from '../shared/';
+import { DataService, Question } from '../shared/';
+import { QuestionComponent } from '../question/';
 
 @Component({
   moduleId: module.id,
-  selector: 'app-questions-screen',
+  selector: 'lina-questions-screen',
   templateUrl: 'questions-screen.component.html',
   styleUrls: ['questions-screen.component.css'],
-  directives: [RADIO_GROUP_DIRECTIVES]
+  directives: [RADIO_GROUP_DIRECTIVES, QuestionComponent]
 })
 export class QuestionsScreenComponent implements OnInit {
 
@@ -16,12 +17,21 @@ export class QuestionsScreenComponent implements OnInit {
   addQuestionForm: ControlGroup;
   correctAnswer: string;
 
+  showQuestion: boolean;
+  currentQuestionIndex: number;
+  currentQuestion: Question;
+  questionList: Array<Question>;
+
   constructor(
     private _fb: FormBuilder,
     private _dataService: DataService
   ) {}
 
   ngOnInit() {
+    this.showQuestion = true;
+    this.questionList = [];
+
+    this.onGetQuestionList();
 
     this.addQuestionForm = this._fb.group({
       question: ['', Validators.required],
@@ -50,19 +60,23 @@ export class QuestionsScreenComponent implements OnInit {
       });
   }
 
-  onCheckAnswer(questionId: string, answer: number) {
-    this._dataService.checkAnswer(questionId, answer)
-    .subscribe({
-      next: (result) => {
-        if(result) {
-          console.log('Correct answer');
-        }
-        else {
-          console.log('NOT Correct answer');
-        }
-      },
-      complete: () => console.log('checkAnswer complete.')
-    });
+  onAnswer(answeredCorrectly: boolean) {
+    console.log(`Answered correctly: ${answeredCorrectly}`);
+  }
+
+  onGetQuestionList() {
+    this._dataService.getAllQuestionsData()
+      .subscribe({
+        next: (question) => {
+          question[1].id = question[0];
+          this.questionList.push(question[1]);
+        },
+        complete: () => this.setCurrentQuestion(0)
+      });
+  }
+
+  setCurrentQuestion(index: number) {
+    this.currentQuestion = this.questionList[index];
   }
 
 }
