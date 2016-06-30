@@ -14,7 +14,7 @@ import { QuestionComponent } from './question.component';
 
 describe('Component: Question', () => {
   it('should create an instance', () => {
-    let component = new QuestionComponent();
+    let component = new QuestionComponent(null, null);
     expect(component).toBeTruthy();
   });
 });

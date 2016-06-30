@@ -14,7 +14,7 @@ import { MenuScreenComponent } from './menu-screen.component';
 
 describe('Component: MenuScreen', () => {
   it('should create an instance', () => {
-    let component = new MenuScreenComponent(null);
+    let component = new MenuScreenComponent(null, null);
     expect(component).toBeTruthy();
   });
 });

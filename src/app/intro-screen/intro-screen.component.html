@@ -1,7 +1,9 @@
-<h1>Nadupaný fanúšik</h1>
-<p>Touto milou vetou sa ti snažíme dať ponuku, ktorá sa neodmieta...</p>
-
-<a *ngIf="!isLoggedIn"  (click)="onLogin()">Prihlásiť sa cez FB</a><br>
-<a *ngIf="isLoggedIn"   (click)="onNavigate('menu')">Vstúpiť do hry</a>
-
-
+<h1>
+  <img src="./img/nadupany-fanusik.png" alt="Nadupaný fanúšik" class="nadupany-fanusik">
+  <!-- <img src="./img/nadupany-fanusik.png" alt="Nadupaný fanúšik" class="nadupany-fanusik" width="523" height="214"> -->
+</h1>
+<br><br><br>
+<div class="button-list button-list-vertical">
+  <button *ngIf="!isLoggedIn"  (click)="onLogin()">Prihlásiť sa cez FB</button>
+  <button *ngIf="isLoggedIn"   (click)="onNavigate('menu')">Vstúpiť do hry</button>
+</div>

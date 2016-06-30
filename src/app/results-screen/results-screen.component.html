@@ -1,1 +1,13 @@
-<a (click)="onNavigate('menu')">Späť na úvod</a>
+<h1>
+  <img src="./img/vysledky.png" alt="Výsledky" class="vysledky" width="601" height="127">
+</h1>
+
+<ol id="results-list" *ngIf="users">
+  <li *ngFor="let user of users">
+    {{user.displayName}}
+  </li>
+</ol>
+
+<div class="button-list small-text button-list-vertical">
+  <button (click)="onNavigate('menu')">Späť na úvod</button>
+</div>

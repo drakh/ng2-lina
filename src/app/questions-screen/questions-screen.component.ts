@@ -1,8 +1,13 @@
+import { AfterViewInit, ViewChild } from '@angular/core';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, ControlGroup, Validators } from "@angular/common";
 import { RADIO_GROUP_DIRECTIVES } from "ng2-radio-group";
-import { DataService, Question } from '../shared/';
+import { DataService, ProgressService, Question } from '../shared/';
 import { QuestionComponent } from '../question/';
+import { Router } from '@angular/router';
+
+declare var _: any;
+declare var jQuery: any;
 
 @Component({
   moduleId: module.id,
@@ -12,6 +17,9 @@ import { QuestionComponent } from '../question/';
   directives: [RADIO_GROUP_DIRECTIVES, QuestionComponent]
 })
 export class QuestionsScreenComponent implements OnInit {
+
+  @ViewChild(QuestionComponent)
+  private questionComponent: QuestionComponent;
 
   response: string;
   addQuestionForm: ControlGroup;
@@ -23,16 +31,14 @@ export class QuestionsScreenComponent implements OnInit {
   questionList: Array<Question>;
 
   constructor(
+    private _router: Router,
     private _fb: FormBuilder,
-    private _dataService: DataService
+    private _dataService: DataService,
+    private _progressService: ProgressService
+
   ) {}
 
   ngOnInit() {
-    this.showQuestion = true;
-    this.questionList = [];
-
-    this.onGetQuestionList();
-
     this.addQuestionForm = this._fb.group({
       question: ['', Validators.required],
       answer1: ['', Validators.required],
@@ -40,16 +46,38 @@ export class QuestionsScreenComponent implements OnInit {
       answer3: ['', Validators.required],
       answer4: ['', Validators.required]
     });
+
+    jQuery('body').addClass('squirrel').removeClass('empty');
+  }
+
+  ngAfterViewInit() {
+    console.log('QuestionsScreenComponent.ngAfterViewInit');
+
+    this.questionList = [];
+    this.onGetQuestionList();    
   }
 
   onAddQuestionFormSubmit() {
     console.log('Submitting form.');
 
-     this._dataService.postQuestionData(this.addQuestionForm.value)
-      .subscribe(
-        questionId => this.onSaveCorrectAnswer(questionId),
-        error => console.error(error)
-      );
+    const questionData: Question = this.addQuestionForm.value;
+    questionData.timesFailed = 0;
+
+    this._dataService.postQuestionData(questionData)
+      .subscribe({
+        next: questionId => this.onSaveCorrectAnswer(questionId),
+        error: error => console.error(error),
+        complete: () => this.clearQuestionForm()
+      });
+  }
+
+  clearQuestionForm() {
+    this.correctAnswer = null;
+
+    _.each(this.addQuestionForm.controls, (control) => {
+      control.updateValue('');
+      control.setErrors(null);
+    });
   }
 
   onSaveCorrectAnswer(questionId: string) {
@@ -60,8 +88,32 @@ export class QuestionsScreenComponent implements OnInit {
       });
   }
 
-  onAnswer(answeredCorrectly: boolean) {
-    console.log(`Answered correctly: ${answeredCorrectly}`);
+  onAnswer(answeredResult: string) {
+
+    if(answeredResult === 'correct') {
+      this._progressService.increaseQuestionProgress();
+      setTimeout(() => {
+        this.setNextQuestionData();
+      }, 1000);
+    }
+    else if(answeredResult === 'wrong') {      
+      setTimeout(() => {
+        this.onGameOver('wrong');
+      }, 1000);
+    }
+
+    console.log(`Answered ${answeredResult}`);
+  }
+
+  onGameOver(howFinished: string) {
+    // if(howFinished === 'wrong') {
+    //   this._dataService.postQuestionFail(this.currentQuestion)
+    //     .subscribe({
+    //       error: error => console.error(error)
+    //     });
+    // }
+
+    this._router.navigate(['/gameover'], howFinished);
   }
 
   onGetQuestionList() {
@@ -71,12 +123,24 @@ export class QuestionsScreenComponent implements OnInit {
           question[1].id = question[0];
           this.questionList.push(question[1]);
         },
-        complete: () => this.setCurrentQuestion(0)
+        complete: () => this.setNextQuestionData()
       });
   }
 
-  setCurrentQuestion(index: number) {
-    this.currentQuestion = this.questionList[index];
+  setNextQuestionData() {
+
+    if(this.questionList.length < 1) {
+      this.onGameOver('win');
+    }
+
+    const questionIndex = Math.floor(Math.random() * this.questionList.length);
+
+    // removes random question from questionList and saves it
+    this.questionComponent.changeQuestion(this.questionList.splice(questionIndex, 1)[0]);
+  }
+
+  onTimeRunOut() {
+
   }
 
 }

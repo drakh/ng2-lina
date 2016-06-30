@@ -1,7 +1,8 @@
 import { Injectable } from "@angular/core";
-import { Http, Headers } from "@angular/http";
 import  'rxjs/Rx';
-import {Observable} from "rxjs/Observable";
+import { Observable } from "rxjs/Observable";
+import { User } from "./user.model";
+import { Question } from "./question.model";
 
 declare var _: any;
 declare var firebase: any;
@@ -9,9 +10,11 @@ declare var firebase: any;
 @Injectable()
 export class DataService {
   private database;
+  private questionProgress: number;
 
-  constructor (private _http: Http) {
+  constructor () {
     this.database = firebase.database();
+    this.questionProgress = 0;
   }
 
   getAllQuestionsData(): Observable<any> {
@@ -78,7 +81,57 @@ export class DataService {
       })
       .catch(() => {
         observer.error(new Error("Error occurred when checking correct answer!"));
-      });;
+      });
     });
   }
+
+  saveNewUser(userData: User) {
+    this.database.ref(`users/${userData.uid}`).once('value').then((snapshot) => {
+      if( !snapshot.val() ) {
+        this.database.ref(`users/${userData.uid}`).set(userData);
+      }
+    });
+  }
+
+  checkIfUserExist(uid: string) {
+    return this.database.ref(`users/${uid}`).once('value');
+  }
+
+  allCodes$(): Observable<any> {
+    return new Observable(observer => {
+      this.database.ref('codes').on('value', function(snapshot) {
+        observer.next(snapshot.val());
+      });
+    });
+  }
+
+  allUsers$(): Observable<any> {
+    return new Observable(observer => {
+      this.database.ref('users').on('value', function(snapshot) {
+        observer.next(snapshot.val());
+      });
+    });
+  }
+
+  // postQuestionFail(questionData: Question) {
+  //   return new Observable(observer => {
+  //     this.database.ref(`questions/${questionData.id}`).once('value')
+  //     .then((snapshot) => {
+  //       if( !snapshot ) {
+  //         observer.complete();
+  //       }
+
+  //       let newQuestionData = snapshot.val();
+  //       let timesFailed = newQuestionData.timesFailed || 0;
+
+  //       newQuestionData.timesFailed = timesFailed + 1;
+
+  //       this.database.ref(`questions/${questionData.id}`).update(newQuestionData);
+  //       observer.complete();
+  //     })
+  //     .catch((error) => {
+  //       observer.error(new Error(error));
+  //     });
+  //   });
+  // }
 }

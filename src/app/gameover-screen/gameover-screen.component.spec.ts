@@ -10,11 +10,11 @@ import {
   async, inject
 } from '@angular/core/testing';
 
-import { QuestionsScreenComponent } from './questions-screen.component';
+import { GameoverScreenComponent } from './gameover-screen.component';
 
-describe('Component: QuestionsScreen', () => {
+describe('Component: GameoverScreen', () => {
   it('should create an instance', () => {
-    let component = new QuestionsScreenComponent(null, null, null, null);
+    let component = new GameoverScreenComponent(null, null, null, null);
     expect(component).toBeTruthy();
   });
 });

@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
+declare var jQuery: any;
+
 @Component({
   moduleId: module.id,
   selector: 'lina-rules-screen',
@@ -12,6 +14,7 @@ export class RulesScreenComponent implements OnInit {
   constructor(private router: Router) {}
 
   ngOnInit() {
+    jQuery('body').addClass('empty').removeClass('squirrel');
   }
 
   onNavigate(destination: String) {

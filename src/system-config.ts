@@ -40,10 +40,10 @@ const barrels: string[] = [
   'app/rules-screen',
   'app/questions-screen',
   'app/menu-screen',
-  'app/results',
   'app/results-screen',
   'app/question',
   'app/signin-screen',
+  'app/gameover-screen',
   /** @cli-barrel */
 ];
 

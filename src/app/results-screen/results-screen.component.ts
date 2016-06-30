@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { DataService, User } from '../shared/';
+
+declare var jQuery: any;
+declare var _: any;
 
 @Component({
   moduleId: module.id,
@@ -9,14 +13,32 @@ import { Router } from '@angular/router';
 })
 export class ResultsScreenComponent implements OnInit {
 
-  constructor(private router: Router) {}
+  private users: Array<User>;
+
+  constructor(
+    private _router: Router,
+    private _dataService: DataService
+  ) {}
 
   ngOnInit() {
+    jQuery('body').addClass('empty').removeClass('squirrel');
+
+    this._dataService.allUsers$()
+      .subscribe({
+        next: (allUsersData) => this.handleUsers(allUsersData)
+      });
   }
 
   onNavigate(destination: String) {
-    console.log(`Results navigating to ${destination} screen.`);
-    this.router.navigate([`/${destination}`]);
+    this._router.navigate([`/${destination}`]);
+  }
+
+  handleUsers(allUsersData) {
+    this.users = [];
+    _.map(allUsersData, (userData: User) => this.users.push(userData));    
+    this.users = _.sortBy(this.users, 'highScore');
+    this.users = this.users.reverse();
+    this.users = _.first(this.users, 5);
   }
 
 }

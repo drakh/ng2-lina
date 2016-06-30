@@ -2,13 +2,13 @@ import { Injectable, EventEmitter } from "@angular/core";
 import { DataService } from "./data.service";
 import { User } from "./user.model";
 import  'rxjs/Rx';
-import {Observable} from "rxjs/Observable";
+import { Observable } from "rxjs/Observable";
 declare var firebase: any;
 
 @Injectable()
 export class AuthService {
   private _userLoggedOut = new EventEmitter<any>();
-  private user: User
+  public user: User
 
   constructor(private _dataService: DataService) {}
 
@@ -18,15 +18,32 @@ export class AuthService {
       firebase.auth().signInWithPopup(fbLoginProvider).then((result) => {
         localStorage.setItem('token', result.credential.accessToken);
 
-        this.user = new User(
-          result.user.uid,
-          result.user.displayName,
-          result.user.email,
-          result.user.photoURL
-        );
+        this._dataService.checkIfUserExist(result.user.uid).then((snapshot) => {
+          if(snapshot.val()) {
+            this.user = new User(
+              snapshot.val().uid,
+              snapshot.val().displayName,
+              snapshot.val().email,
+              snapshot.val().photoURL,
+              snapshot.val().highScore,
+              snapshot.val().codes || new Array()
+            );
+          }
+          else {
+            this.user = new User(
+              result.user.uid,
+              result.user.displayName,
+              result.user.email,
+              result.user.photoURL,
+              0,
+              new Array()
+            );
 
-        observer.next();
+            this._dataService.saveNewUser( this.getLoggedUserDataAll() );
+          }
 
+          observer.complete();
+        });
       })
       .catch(function(error) {
         observer.error(new Error(`${error.code}: ${error.message}`));
@@ -48,7 +65,6 @@ export class AuthService {
   }
 
   getLoggedUserDisplayName(): string {
-    console.log(this.user);
     if( this.isAuthenticated() && this.user.getDisplayName() ) {
       return this.user.getDisplayName();
     }
@@ -57,4 +73,16 @@ export class AuthService {
     }
   }
 
+  getLoggedUserData(key: string): string {
+    return this.user[key];
+  }
+
+  getLoggedUserDataAll(): User {
+    if( this.isAuthenticated() && this.user != null ) {
+      return this.user;
+    }
+    else {
+      return null;
+    }
+  }
 }

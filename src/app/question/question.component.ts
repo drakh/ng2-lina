@@ -13,11 +13,13 @@ import { Router } from '@angular/router';
 export class QuestionComponent implements OnInit {
 
   @Input() question: Question;
-  @Output() onTimeRunOut = new EventEmitter<boolean>();
-  @Output() onAnswer = new EventEmitter<boolean>();
+  @Output() onTimeRunOut = new EventEmitter();
+  @Output() onAnswer: EventEmitter<boolean> = new EventEmitter<boolean>();
+
+  questionTimerSubscription: any;
   remainingTime: number;
-  questionTimer$: Observable<any>;
-  questionTimerSubsciption: any;
+  lastClickedButton;
+  questionTimer$;
 
   constructor(
     private _router: Router,
@@ -28,28 +30,50 @@ export class QuestionComponent implements OnInit {
     this.onInitTimer();
   }
 
-  onCheckAnswer(answer: number) {
+  onCheckAnswer($event) {
+
+    this.lastClickedButton = $event.target;
+
+    let answer = this.lastClickedButton.dataset.answer;
+    let actualClassName = this.lastClickedButton.className;
+    this.lastClickedButton.className = `loading`;
+
     this._dataService.checkAnswer(this.question.id, answer)
     .subscribe({
       next: (result) => {
-        this.onAnswer.emit(result);
-        this.questionTimerSubsciption.unsubscribe();
-      },
-      complete: () => console.log('checkAnswer complete.')
+        this.questionTimerSubscription.unsubscribe();
+        result = result ? 'correct' : 'wrong';
+        this.lastClickedButton.className = result;
+
+        setTimeout(() => {
+          this.onAnswer.emit(result);
+        }, 1500);
+      }
     });
   }
 
   onInitTimer() {
+
     this.remainingTime = 10;
     this.questionTimer$ = Observable.interval(1000);
-    this.questionTimerSubsciption = this.questionTimer$.take(10).subscribe({
+    this.questionTimerSubscription = this.questionTimer$.take(10).subscribe({
       next: () => {
         --this.remainingTime;
       },
       complete: () => {
-        return this._router.navigate([`/`]);
+        this.onTimeRunOut.emit('');
       }
     });
+  }
+
+  changeQuestion(question: Question) {
+    if(this.lastClickedButton) {
+      this.lastClickedButton.className = '';
+    }
+    
+    this.questionTimerSubscription.unsubscribe();
+    this.question = question;
+    this.onInitTimer();
   }
 
 }

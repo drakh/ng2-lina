@@ -1,8 +1,9 @@
+<!--
 <form [ngFormModel]="addQuestionForm" (ngSubmit)="onAddQuestionFormSubmit()">
   <div class="input">
     <label for="question">Title</label>
-    <input type="text"
-           [ngFormControl]="addQuestionForm.find('question')">
+    <textarea [ngFormControl]="addQuestionForm.find('question')" rows="5" cols="40">
+    </textarea>
   </div>
 
   <radio-group [(ngModel)]="correctAnswer">
@@ -37,29 +38,10 @@
     value="Add New Question"
   />
 </form>
+-->
 
 <lina-question
-  *ngIf="showQuestion"
   [question]="currentQuestion"
-  (onAnswer)="onAnswer($event)">
+  (onAnswer)="onAnswer($event)"
+  (onTimeRunOut)="onGameOver('timeup')">
 </lina-question>
-
-<!-- <div>
-  <div *ngFor="let question of questionList" class="question" data-questionId="{question.id}">
-    <h2>{{question.question}}</h2>
-    <ul>
-      <li>{{question.answer1}}</li>
-      <li>{{question.answer2}}</li>
-      <li>{{question.answer3}}</li>
-      <li>{{question.answer4}}</li>
-    </ul>
-  </div>
-</div> -->
-
-<!--
-<form (ngSubmit)="onCheckAnswer(questionId.value, answer.value)">-->
-  <!--<input type="text" #questionId>-->
-  <!--<input type="number" #answer>-->
-  <!--<input type="submit">-->
-<!--</form>
--->

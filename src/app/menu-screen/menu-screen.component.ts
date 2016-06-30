@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { ProgressService } from "../shared/";
 
 @Component({
   moduleId: module.id,
@@ -9,9 +10,14 @@ import { Router } from '@angular/router';
 })
 export class MenuScreenComponent implements OnInit {
 
-  constructor(private _router: Router) {}
+  constructor(
+    private _router: Router,
+    private _progressService: ProgressService
+  ) {}
 
   ngOnInit() {
+    console.log('MenuScreenComponent initialized');
+    this._progressService.resetQuestionProgress();
   }
 
   onNavigate(destination: String) {
