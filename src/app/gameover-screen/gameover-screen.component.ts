@@ -45,7 +45,7 @@ export class GameoverScreenComponent implements OnInit {
 
 
     this.howFinished = this._route.snapshot.params['howFinished'];
-    console.log(this.howFinished);
+    console.log('GameoverScreenComponent.howFinished: ', this.howFinished);
 
 
     this.addCodeForm = this._fb.group({

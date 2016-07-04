@@ -16,7 +16,7 @@ export const routes: RouterConfig = [
   { path: 'vyhry', component: PrizesScreenComponent, canActivate: [AuthGuard] },
   { path: 'kviz', component: QuestionsScreenComponent, canActivate: [AuthGuard] },
   { path: 'vysledky', component: ResultsScreenComponent, canActivate: [AuthGuard] },
-  { path: 'gameover', component: GameoverScreenComponent, canActivate: [AuthGuard] }
+  { path: 'gameover/:howFinished', component: GameoverScreenComponent, canActivate: [AuthGuard] }
 ];
 
 export const APP_ROUTER_PROVIDERS = [

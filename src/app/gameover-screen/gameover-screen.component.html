@@ -1,5 +1,5 @@
 <h1>
-  <img src="./img/hra-skoncila.png" alt="Hra skončila" class="hra-skoncila" width="493" height="193">
+  <img src="./img/hra-skoncila.png" alt="Hra skončila" class="hra-skoncila" height="130">
 </h1>
 
 <div class="button-list button-list-vertical">
@@ -12,16 +12,28 @@
     <p>Tvoje najvyššie skóre {{[2,3,4].indexOf(currentHighScore) != -1 ? 'sú':'je'}} {{currentHighScore}} {{highScoreString}}.</p>
   </div>
   <div *ngIf="currentHighScore < questionProgress">
-    <p>Prekanal si svoje skóre {{currentHighScore}} {{highScoreString}}.</p>
+    <p>Prekonal si svoje skóre {{currentHighScore}} {{highScoreString}}.</p>
   </div>
 </div>
 
-<div *ngIf="isNewHighScore && isResultKnown">
+<div *ngIf="isNewHighScore && howFinished == 'wrong' && isResultKnown">
   <p>Síce si neodpovedal správne, ale zvýšil si si skóre, gratulujeme!</p>    
 </div>
 
-<div *ngIf="!isNewHighScore && isResultKnown">
+<div *ngIf="!isNewHighScore && howFinished == 'wrong' && isResultKnown">
   <p>Škoda, odpovedal si nesprávne. Skús znova.</p>    
+</div>
+
+<div *ngIf="isNewHighScore && howFinished == 'timeup' && isResultKnown">
+  <p>Síce si nestihol odpovedať, ale zvýšil si si skóre, gratulujeme!</p>    
+</div>
+
+<div *ngIf="howFinished == 'win'">
+  <p>Odpovedal si na všetky otázky, gratulujeme!</p>    
+</div>
+
+<div *ngIf="!isNewHighScore && howFinished == 'timeup' && isResultKnown">
+  <p>Škoda, nestihol si odpovedať. Skús znova.</p>
 </div>
 
 <div *ngIf="!isAddCodeFormVisible && codeHelped">
@@ -36,14 +48,14 @@
   <p>Ojoj. Tvoj kód už bol raz zadný. Skús iný.</p>
 </div>
 
-<div class="col-xs-12 col-sm-offset-3 col-sm-6 col-md-offset-4 col-md-4">
+<div class="col-xs-12 col-sm-offset-2 col-sm-8 col-md-offset-3 col-md-6 col-lg-offset-4 col-lg-4">
 
   <form
     [ngFormModel]="addCodeForm"
     *ngIf="isAddCodeFormVisible"
     (ngSubmit)="onAddCodeFormSubmit()">
 
-    <input type="text" [(ngModel)]="code" [ngFormControl]="addCodeForm.find('code')" placeholder="DKP"><br>
+    <input type="text" [(ngModel)]="code" [ngFormControl]="addCodeForm.find('code')" placeholder="číslo z bločku"><br>
     <input type="text" [(ngModel)]="date" [ngFormControl]="addCodeForm.find('date')" placeholder="Dátum nákupu">
 
     <div class="button-list button-list-vertical">

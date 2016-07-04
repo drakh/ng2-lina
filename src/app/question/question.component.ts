@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, Input, Output } from '@angular/core';
+import { Component, OnInit, OnChanges, EventEmitter, Input, Output } from '@angular/core';
 import { DataService, Question } from '../shared/';
 import  'rxjs/Rx';
 import { Observable } from "rxjs/Observable";
@@ -20,6 +20,7 @@ export class QuestionComponent implements OnInit {
   remainingTime: number;
   lastClickedButton;
   questionTimer$;
+  canAnswer: boolean;
 
   constructor(
     private _router: Router,
@@ -27,10 +28,21 @@ export class QuestionComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    console.log('QuestionComponent.ngOnInit');
     this.onInitTimer();
   }
 
+  ngOnChanges() {
+    console.log('QuestionComponent.ngOnChanges');
+  }
+
   onCheckAnswer($event) {
+
+    if(!this.canAnswer) {
+      return;
+    }
+
+    this.canAnswer = false;
 
     this.lastClickedButton = $event.target;
 
@@ -42,21 +54,24 @@ export class QuestionComponent implements OnInit {
     .subscribe({
       next: (result) => {
         this.questionTimerSubscription.unsubscribe();
-        result = result ? 'correct' : 'wrong';
-        this.lastClickedButton.className = result;
+        result = result ? 'correct' : 'wrong';        
+
+        setTimeout(() => {
+          this.lastClickedButton.className = result;
+        }, 1000);
 
         setTimeout(() => {
           this.onAnswer.emit(result);
-        }, 1500);
+        }, 2000);
       }
     });
   }
 
   onInitTimer() {
 
-    this.remainingTime = 10;
+    this.remainingTime = 20;
     this.questionTimer$ = Observable.interval(1000);
-    this.questionTimerSubscription = this.questionTimer$.take(10).subscribe({
+    this.questionTimerSubscription = this.questionTimer$.take(20).subscribe({
       next: () => {
         --this.remainingTime;
       },
@@ -73,6 +88,7 @@ export class QuestionComponent implements OnInit {
     
     this.questionTimerSubscription.unsubscribe();
     this.question = question;
+    this.canAnswer = true;
     this.onInitTimer();
   }
 

@@ -1,0 +1,223 @@
+body {
+  font-family: 'Work Sans', sans-serif;
+  background-size: cover;
+  background-position: bottom;  
+}
+
+body.empty {
+  background-image: url('../img/empty-bg-desktop.jpg');
+}
+
+body.squirrel {
+  background-image: url('../img/squirrel-bg-desktop.jpg');
+}
+
+@media(max-width: 768px) {
+  body {
+    background-image: url('../img/empty-bg-mobile.jpg');
+  }
+}
+@media(max-width: 992px) {
+  body {
+    background-image: url('../img/empty-bg-tablet.jpg');
+  }
+}
+
+h1 img {
+  margin: 0 auto;
+  display: block;
+  margin-top: 35px;
+  margin-bottom: 40px;
+  max-width: 80%;
+}
+
+.footer {
+  width: 100%;
+  position: fixed;
+  bottom: 0px;
+  pointer-events: none;
+}
+
+#loader {
+  margin: 400px auto 0 auto;
+  display: block;
+}
+
+.menu-text {
+  margin: 0 auto 15px auto;
+  width: 100%;
+  max-width: 768px;
+  color: #fff;
+}
+  .menu-text h3 {
+    text-transform: uppercase;
+    font-weight: 500;
+    font-size: 35px;
+  }
+
+  .menu-text p {
+    font-weight: 200;
+    font-size: 25px;
+    margin-bottom: 45px;
+  }
+
+.button-group {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin: 0 auto;
+}
+  .button-list {
+    margin: 0 auto;
+    max-width: 100%;
+  }
+    .button-list button {
+      display: block;
+      margin: 0 auto 30px auto;
+      background-color: transparent;
+      color: #fff;
+      border-width: 0px;
+      text-transform: uppercase;
+      font-weight: 300;
+      font-size: 25px;
+      width: 349px;
+      max-width: 100%;
+      height: 52px;
+      background-image: url('../img/button-sprite.png');
+      background-position: top;
+    }
+    .button-list button:hover {
+      background-position: center -52px;
+    }
+    .button-list button.correct {
+      background-position: center -104px ;
+    }
+    .button-list button.wrong {
+      background-position: center bottom;
+    }
+    .button-list button.loading {
+      animation: loading 500ms steps(2) 0s infinite;
+    }
+
+    lina-question .button-list button {
+      font-size: 18px;
+      text-transform: initial;
+    }
+
+    @keyframes loading {
+      from {background-position: center 0px;}
+      to {background-position: center -104px;}
+    }
+
+    .button-list button:focus {
+      outline: -webkit-focus-ring-color auto 0px;
+    }
+
+  #question {
+    margin: 95px auto 15px auto;
+    width: 100%;
+    max-width: 768px;
+  }
+  @media (max-width: 767px) {
+    #question {
+      margin-top: 40px;
+    }
+  }
+  #question .question-text {    
+    max-width: 100%;    
+    text-align: center;
+    font-size: 20px;
+    font-weight: 300;
+    color: #fff;
+    margin-bottom: 30px;
+  }
+
+  @media (min-width: 768px) {
+    #question .question-text {
+      width: 768px;
+      height: 103px;
+      background-image: url('../img/question-bg.png');
+    }
+  }
+
+lina-gameover-screen {
+  text-align: center;
+}
+  lina-gameover-screen p {
+    color: #fff;
+    font-weight: 200;
+    font-size: 25px;
+    margin-bottom: 20px;
+  }
+
+  #scores {
+    margin-bottom: 30px;
+  }
+    #scores p {
+      font-weight: 400;
+      font-size: 35px;
+      margin-bottom: 5px;
+    }
+
+  lina-gameover-screen form input {
+    border-width: 0px;
+    width: 100%;
+    padding: 10px;
+    font-size: 21px;
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+lina-results-screen p {
+  color: #fff;
+  font-size: 25px;
+  font-weight: 300;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+#results-list-holder {
+  max-width: 100%;
+  width: 430px;
+  max-height: 340px;
+  margin: 0 auto 30px auto;
+  overflow-y: scroll;
+}
+  #results-list {
+    width: 400px;
+    margin: 0 auto;
+    color: #fff;
+  }
+    #results-list li {
+      font-weight: 300;
+      font-size: 30px;
+    }
+
+lina-rules-screen p {
+  color: #fff;
+  font-size: 25px;
+  font-weight: 300;
+}
+
+#rules-holder {
+  max-height: 100%;
+  height: 440px;
+  overflow-y: scroll;
+  margin-bottom: 50px;
+}
+
+lina-prizes-screen ul {
+  list-style: none;
+}
+
+lina-prizes-screen li {
+  color: #fff;
+  font-size: 25px;
+}
+
+#prizes-holder {
+  max-height: 100%;
+  height: 380px;
+  overflow-y: scroll;
+  margin-bottom: 50px;
+}

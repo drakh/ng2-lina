@@ -51,10 +51,10 @@ export class QuestionsScreenComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-    console.log('QuestionsScreenComponent.ngAfterViewInit');
+    console.log('QuestionsScreenComponent.ngAfterViewChecked');
 
     this.questionList = [];
-    this.onGetQuestionList();    
+    this.onGetQuestionList();
   }
 
   onAddQuestionFormSubmit() {
@@ -90,16 +90,18 @@ export class QuestionsScreenComponent implements OnInit {
 
   onAnswer(answeredResult: string) {
 
+    let timeOut = 1000;
+
     if(answeredResult === 'correct') {
       this._progressService.increaseQuestionProgress();
       setTimeout(() => {
         this.setNextQuestionData();
-      }, 1000);
+      }, timeOut);
     }
     else if(answeredResult === 'wrong') {      
       setTimeout(() => {
         this.onGameOver('wrong');
-      }, 1000);
+      }, timeOut);
     }
 
     console.log(`Answered ${answeredResult}`);
@@ -113,7 +115,7 @@ export class QuestionsScreenComponent implements OnInit {
     //     });
     // }
 
-    this._router.navigate(['/gameover'], howFinished);
+    this._router.navigate(['/gameover', howFinished]);
   }
 
   onGetQuestionList() {
@@ -123,20 +125,30 @@ export class QuestionsScreenComponent implements OnInit {
           question[1].id = question[0];
           this.questionList.push(question[1]);
         },
-        complete: () => this.setNextQuestionData()
+        complete: () => {
+          this.questionList = [
+            this.questionList[0],
+            this.questionList[1]
+          ];
+          this.setNextQuestionData();
+        }
       });
   }
 
   setNextQuestionData() {
+
+    console.log(this.questionList);
 
     if(this.questionList.length < 1) {
       this.onGameOver('win');
     }
 
     const questionIndex = Math.floor(Math.random() * this.questionList.length);
+    // this.currentQuestion = null;
+    this.currentQuestion = this.questionList.splice(questionIndex, 1)[0];
 
     // removes random question from questionList and saves it
-    this.questionComponent.changeQuestion(this.questionList.splice(questionIndex, 1)[0]);
+    this.questionComponent.changeQuestion(this.currentQuestion);
   }
 
   onTimeRunOut() {

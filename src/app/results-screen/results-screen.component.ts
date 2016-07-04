@@ -38,7 +38,6 @@ export class ResultsScreenComponent implements OnInit {
     _.map(allUsersData, (userData: User) => this.users.push(userData));    
     this.users = _.sortBy(this.users, 'highScore');
     this.users = this.users.reverse();
-    this.users = _.first(this.users, 5);
   }
 
 }

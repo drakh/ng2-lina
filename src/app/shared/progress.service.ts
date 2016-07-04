@@ -44,7 +44,7 @@ export class ProgressService {
 
   validateCode(code: string) {
 
-    if(!this.allCodes) {
+    if(!this.allCodes && code != '') {
       return true;
     }
 
@@ -64,7 +64,7 @@ export class ProgressService {
       this.userData.addCode(code);
       this.questionProgress += 5;
       usedCode = true;
-    }    
+    }
 
     if( this.userData.highScore < this.questionProgress ) {
       this.userData.setHighScore(this.questionProgress);
