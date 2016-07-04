@@ -1,0 +1,25 @@
+<!--
+<div>{{remainingTime}}</div>
+-->
+
+<div id="question" *ngIf="question" data-question-id="question?id">
+  <div class="question-text">
+    <table style="width: 100%">
+      <tr height="100">
+        <td width="120"></td>
+        <td style="padding-left:20px;padding-right:50px">{{question?.question}}</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="button-group">
+    <div class="button-list button-list-answers">
+      <button class="small-text" (click)="onCheckAnswer(1)">{{question?.answer1}}</button>
+      <button class="small-text" (click)="onCheckAnswer(2)">{{question?.answer2}}</button>
+    </div>
+    <div class="button-list button-list-answers">
+      <button class="small-text" (click)="onCheckAnswer(3)">{{question?.answer3}}</button>
+      <button class="small-text" (click)="onCheckAnswer(4)">{{question?.answer4}}</button>
+    </div>
+  </div>
+</div>

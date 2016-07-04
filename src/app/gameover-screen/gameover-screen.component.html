@@ -1,20 +1,6 @@
 <h1>
-  <img src="./img/hra-skoncila.png" alt="Hra skončila" class="hra-skoncila" height="130">
+  <img src="./img/hra-skoncila.png" alt="Hra skončila" class="hra-skoncila">
 </h1>
-
-<div class="button-list button-list-vertical">
-  <button (click)="onNavigate('menu')">Späť na úvod</button>
-</div>
-
-<div id="scores" *ngIf="currentHighScore != undefined && questionProgress != undefined">
-  <p>Nahral si {{questionProgress}} {{currentProgressString}}.</p>
-  <div *ngIf="currentHighScore >= questionProgress">
-    <p>Tvoje najvyššie skóre {{[2,3,4].indexOf(currentHighScore) != -1 ? 'sú':'je'}} {{currentHighScore}} {{highScoreString}}.</p>
-  </div>
-  <div *ngIf="currentHighScore < questionProgress">
-    <p>Prekonal si svoje skóre {{currentHighScore}} {{highScoreString}}.</p>
-  </div>
-</div>
 
 <div *ngIf="isNewHighScore && howFinished == 'wrong' && isResultKnown">
   <p>Síce si neodpovedal správne, ale zvýšil si si skóre, gratulujeme!</p>    
@@ -36,13 +22,28 @@
   <p>Škoda, nestihol si odpovedať. Skús znova.</p>
 </div>
 
+<div id="scores" *ngIf="currentHighScore != undefined && questionProgress != undefined">
+  <p>Nahral si {{questionProgress}} {{currentProgressString}}.</p>
+  <div *ngIf="currentHighScore >= questionProgress">
+    <p>Tvoje najvyššie skóre {{[2,3,4].indexOf(currentHighScore) != -1 ? 'sú':'je'}} {{currentHighScore}} {{highScoreString}}.</p>
+  </div>
+  <div *ngIf="currentHighScore < questionProgress">
+    <p>Prekonal si svoje skóre {{currentHighScore}} {{highScoreString}}.</p>
+  </div>
+</div>
+
+<div class="button-list button-list-vertical">
+  <button (click)="onNavigate('menu')">Späť na úvod</button>
+</div>
+
+<!--
 <div *ngIf="!isAddCodeFormVisible && codeHelped">
   <p>Tvoj kód je platný a zvýšil ti skóre, gratulujeme!</p>
 </div>
 
 <div *ngIf="!isAddCodeFormVisible && !codeHelped">
   <p>Tvoj kód je platný, no nepomohol ti prekonať tvoje najvyššie skóre. Hraj znova.</p>
-</div>
+</div> 
 
 <div *ngIf="!isCodeValid">
   <p>Ojoj. Tvoj kód už bol raz zadný. Skús iný.</p>
@@ -63,3 +64,4 @@
     </div>
   </form>
 </div>
+-->

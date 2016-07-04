@@ -14,10 +14,11 @@
 </head>
 <body class="empty">
   <lina-root>
-    <!-- <img id="loader" src="./img/ajax-loader.svg" alt=""> -->
+    <div id="loading">Aplikácia sa načítava...</div>
   </lina-root>
   <img src="./img/footer-desktop.png" alt="" class="footer hidden-xs hidden-sm">
-  <img src="./img/footer-tablet.png" alt="" class="footer hidden-md hidden-lg">
+  <img src="./img/footer-tablet.png" alt="" class="footer hidden-xs hidden-md hidden-lg">
+  <img src="./img/footer-mobile.png" alt="" class="footer hidden-sm hidden-md hidden-lg">
 
   {{#unless environment.production}}
   <script src="/ember-cli-live-reload.js" type="text/javascript"></script>

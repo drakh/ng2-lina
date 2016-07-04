@@ -1,0 +1,49 @@
+<h1>
+  <img src="./img/hra-skoncila.png" alt="Hra skončila" class="hra-skoncila" width="493" height="193">
+</h1>
+
+<div class="button-list button-list-vertical">
+  <button (click)="onNavigate('menu')">Späť na úvod</button>
+</div>
+
+<div id="scores" *ngIf="currentHighScore != undefined && questionProgress != undefined">
+  <p>Nahral si {{questionProgress}} {{currentProgressString}}.</p>
+  <div *ngIf="currentHighScore >= questionProgress">
+    <p>Tvoje najvyššie skóre {{[2,3,4].indexOf(currentHighScore) != -1 ? 'sú':'je'}} {{currentHighScore}} {{highScoreString}}.</p>
+  </div>
+  <div *ngIf="currentHighScore < questionProgress">
+    <p>Prekanal si svoje skóre {{currentHighScore}} {{highScoreString}}.</p>
+  </div>
+</div>
+
+<div *ngIf="isNewHighScore && isResultKnown">
+  <p>Síce si neodpovedal správne, ale zvýšil si si skóre, gratulujeme!</p>    
+</div>
+
+<div *ngIf="!isNewHighScore && isResultKnown">
+  <p>Škoda, odpovedal si nesprávne. Skús znova.</p>    
+</div>
+
+<div *ngIf="!isAddCodeFormVisible && codeHelped">
+  <p>Tvoj kód je platný a zvýšil ti skóre, gratulujeme!</p>
+</div>
+
+<div *ngIf="!isAddCodeFormVisible && !codeHelped">
+  <p>Tvoj kód je platný, no nepomohol ti prekonať tvoje najvyššie skóre. Hraj znova.</p>
+</div>
+
+<div class="col-xs-12 col-sm-offset-3 col-sm-6 col-md-offset-4 col-md-4">
+
+  <form
+    [ngFormModel]="addCodeForm"
+    *ngIf="isAddCodeFormVisible"
+    (ngSubmit)="onAddCodeFormSubmit()">
+
+    <input type="text" [(ngModel)]="code" [ngFormControl]="addCodeForm.find('code')" placeholder="DKP"><br>
+    <input type="text" [(ngModel)]="date" [ngFormControl]="addCodeForm.find('date')" placeholder="Dátum nákupu">
+
+    <div class="button-list button-list-vertical">
+      <button type="submit" [disabled]="!addCodeForm.valid">Odoslať kód</button>
+    </div>
+  </form>
+</div>

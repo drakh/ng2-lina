@@ -1,21 +1,25 @@
 <div id="question" *ngIf="question" data-question-id="question?id">
   <div class="question-text">
-    <table style="width: 100%">
+    <table style="width: 100%" class="hidden-xs">
       <tr height="100">
         <td style="font-size:35px;font-weight:bold" width="120">{{remainingTime}}</td>
         <td style="padding-left:20px;padding-right:50px">{{question?.question}}</td>
       </tr>
     </table>
+    <div class="hidden-sm hidden-md hidden-lg">
+      <div style="font-size:35px;font-weight:bold">{{remainingTime}}</div>
+      <div>{{question?.question}}</div>
+    </div>
   </div>
 
   <div class="button-group">
     <div class="button-list button-list-answers">
-      <button data-answer="1" class="small-text" (click)="onCheckAnswer($event)">{{question?.answer1}}</button>
-      <button data-answer="2" class="small-text" (click)="onCheckAnswer($event)">{{question?.answer2}}</button>
+      <button data-answer="1" (click)="onCheckAnswer($event)">{{question?.answer1}}</button>
+      <button data-answer="2" (click)="onCheckAnswer($event)">{{question?.answer2}}</button>
     </div>
     <div class="button-list button-list-answers">
-      <button data-answer="3" class="small-text" (click)="onCheckAnswer($event)">{{question?.answer3}}</button>
-      <button data-answer="4" class="small-text" (click)="onCheckAnswer($event)">{{question?.answer4}}</button>
+      <button data-answer="3" (click)="onCheckAnswer($event)">{{question?.answer3}}</button>
+      <button data-answer="4" (click)="onCheckAnswer($event)">{{question?.answer4}}</button>
     </div>
   </div>
 </div>

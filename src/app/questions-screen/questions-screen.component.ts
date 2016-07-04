@@ -35,7 +35,6 @@ export class QuestionsScreenComponent implements OnInit {
     private _fb: FormBuilder,
     private _dataService: DataService,
     private _progressService: ProgressService
-
   ) {}
 
   ngOnInit() {
@@ -51,15 +50,11 @@ export class QuestionsScreenComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-    console.log('QuestionsScreenComponent.ngAfterViewChecked');
-
     this.questionList = [];
     this.onGetQuestionList();
   }
 
   onAddQuestionFormSubmit() {
-    console.log('Submitting form.');
-
     const questionData: Question = this.addQuestionForm.value;
     questionData.timesFailed = 0;
 
@@ -81,7 +76,6 @@ export class QuestionsScreenComponent implements OnInit {
   }
 
   onSaveCorrectAnswer(questionId: string) {
-    console.log(`Sending correct answer for ${questionId}: ${this.correctAnswer}`);
     this._dataService.postCorrectAnswer(questionId, parseInt(this.correctAnswer))
       .subscribe({
         error: error => console.error(error)
@@ -103,8 +97,6 @@ export class QuestionsScreenComponent implements OnInit {
         this.onGameOver('wrong');
       }, timeOut);
     }
-
-    console.log(`Answered ${answeredResult}`);
   }
 
   onGameOver(howFinished: string) {
@@ -126,18 +118,17 @@ export class QuestionsScreenComponent implements OnInit {
           this.questionList.push(question[1]);
         },
         complete: () => {
-          this.questionList = [
-            this.questionList[0],
-            this.questionList[1]
-          ];
+          // this.questionList = [
+          //   this.questionList[0],
+          //   this.questionList[1],
+          //   this.questionList[2]
+          // ];
           this.setNextQuestionData();
         }
       });
   }
 
   setNextQuestionData() {
-
-    console.log(this.questionList);
 
     if(this.questionList.length < 1) {
       this.onGameOver('win');

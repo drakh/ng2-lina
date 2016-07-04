@@ -14,7 +14,7 @@ import { GameoverScreenComponent } from './gameover-screen.component';
 
 describe('Component: GameoverScreen', () => {
   it('should create an instance', () => {
-    let component = new GameoverScreenComponent(null, null, null, null);
+    let component = new GameoverScreenComponent(null, null, null);
     expect(component).toBeTruthy();
   });
 });

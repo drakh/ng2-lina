@@ -13,12 +13,13 @@ body.squirrel {
 }
 
 @media(max-width: 768px) {
-  body {
+  body.empty,
+  body.squirrel {
     background-image: url('../img/empty-bg-mobile.jpg');
   }
 }
 @media(max-width: 992px) {
-  body {
+  body.empty {
     background-image: url('../img/empty-bg-tablet.jpg');
   }
 }
@@ -28,7 +29,17 @@ h1 img {
   display: block;
   margin-top: 35px;
   margin-bottom: 40px;
-  max-width: 80%;
+  max-width: 60%;
+}
+@media (max-width: 379px) {
+  h1 img {
+    margin-bottom: 15px;
+  }
+}
+@media (max-width: 379px) {
+  h1 img.prizes {
+    margin-bottom: 45px;
+  }
 }
 
 .footer {
@@ -38,9 +49,20 @@ h1 img {
   pointer-events: none;
 }
 
-#loader {
-  margin: 400px auto 0 auto;
+#loading {
   display: block;
+  position: absolute;
+  text-align: center;
+  width: 100%;
+  top: 48%;
+  color: #fff;
+  font-weight: 300;
+  font-size: 30px;
+}
+@media (max-width: 379px) {
+  #loading {
+    font-size: 25px;
+  }
 }
 
 .menu-text {
@@ -48,6 +70,7 @@ h1 img {
   width: 100%;
   max-width: 768px;
   color: #fff;
+  text-align: center;
 }
   .menu-text h3 {
     text-transform: uppercase;
@@ -59,6 +82,12 @@ h1 img {
     font-weight: 200;
     font-size: 25px;
     margin-bottom: 45px;
+  }
+  @media (max-width: 379px) {
+    .menu-text p {
+      font-size: 18px;
+      margin-bottom: 20px;
+    }
   }
 
 .button-group {
@@ -99,14 +128,40 @@ h1 img {
       animation: loading 500ms steps(2) 0s infinite;
     }
 
+    @media (min-width: 380px) {
+      @keyframes loading {
+        from {background-position: center 0px;}
+        to {background-position: center -104px;}
+      }
+    }
+    @media (max-width: 379px) {
+      .button-list button {
+        margin-bottom: 20px;
+        height: 43px;
+        width: 290px;
+        background-size: cover;
+        font-size: 18px;
+      }
+
+      .button-list button:hover {
+        background-position: center -43px;
+      }
+      .button-list button.correct {
+        background-position: center -86px ;
+      }
+      .button-list button.wrong {
+        background-position: center bottom;
+      }
+
+      @keyframes loading {
+        from {background-position: center 0px;}
+        to {background-position: center -86px;}
+      }
+    }
+
     lina-question .button-list button {
       font-size: 18px;
       text-transform: initial;
-    }
-
-    @keyframes loading {
-      from {background-position: center 0px;}
-      to {background-position: center -104px;}
     }
 
     .button-list button:focus {
@@ -132,7 +187,7 @@ h1 img {
     margin-bottom: 30px;
   }
 
-  @media (min-width: 768px) {
+  @media (min-width: 798px) {
     #question .question-text {
       width: 768px;
       height: 103px;
@@ -150,6 +205,10 @@ lina-gameover-screen {
     margin-bottom: 20px;
   }
 
+  .hra-skoncila {
+    max-height: 130px;
+  }
+
   #scores {
     margin-bottom: 30px;
   }
@@ -157,6 +216,11 @@ lina-gameover-screen {
       font-weight: 400;
       font-size: 35px;
       margin-bottom: 5px;
+    }
+    @media (max-width: 379px) {
+      #scores p {
+        font-size: 26px;
+      }
     }
 
   lina-gameover-screen form input {
@@ -206,6 +270,7 @@ lina-rules-screen p {
   margin-bottom: 50px;
 }
 
+/*
 lina-prizes-screen ul {
   list-style: none;
 }
@@ -214,10 +279,41 @@ lina-prizes-screen li {
   color: #fff;
   font-size: 25px;
 }
-
 #prizes-holder {
   max-height: 100%;
   height: 380px;
   overflow-y: scroll;
   margin-bottom: 50px;
 }
+*/
+
+#prizes-holder {
+  color: #fff;
+  font-size: 30px;
+}
+  #prizes-holder .row {
+    margin-bottom: 2em;
+  }
+  #prizes-holder span {
+    font-size: 2.25em;
+    font-weight: 500;
+  }
+  #prizes-holder p {
+    font-weight: 300;
+  }
+  #prizes-holder img {
+    max-width: 100%;
+    max-height: 160px;
+    display: block;
+    margin: 0 auto;
+  }
+  @media (max-width: 379px) {
+    #prizes-holder {
+      font-size: 15px;
+    }
+  }
+  @media (max-width: 380px) {
+    #prizes-holder {
+      font-size: 20px;
+    }
+  }

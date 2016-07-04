@@ -23,10 +23,10 @@ export class ProgressService {
     this.questionProgress = 0;
     this.userData = this._authService.getLoggedUserDataAll();
 
-    this._dataService.allCodes$().subscribe({
-      next: (allCodes) => this.allCodes = allCodes,
-      error: (error) => console.error(error)
-    });
+    // this._dataService.allCodes$().subscribe({
+    //   next: (allCodes) => this.allCodes = allCodes,
+    //   error: (error) => console.error(error)
+    // });
   }
 
   increaseQuestionProgress() {
@@ -34,7 +34,7 @@ export class ProgressService {
   }
 
   resetQuestionProgress() {
-    console.log('resetting actual question progress');
+    // console.log('resetting actual question progress');
     this.questionProgress = 0;
   }
 
@@ -42,37 +42,40 @@ export class ProgressService {
     return this.questionProgress;
   }
 
-  validateCode(code: string) {
+  // validateCode(code: string) {
 
-    if(!this.allCodes && code != '') {
-      return true;
-    }
+  //   if(!this.allCodes && code != '') {
+  //     return true;
+  //   }
 
-    return code != '' && !_.contains(Object.keys(this.allCodes), code);
-  }
+  //   return code != '' && !_.contains(Object.keys(this.allCodes), code);
+  // }
 
-  setQuestionProgress(code: string, date: string): boolean {
+  setQuestionProgress(/*code: string, date: string*/): boolean {
 
-    const codeData = {
-      uid: this.userData.uid,
-      date: date
-    };
+    // const codeData = {
+    //   uid: this.userData.uid,
+    //   date: date
+    // };
 
-    let usedCode = false;
+    // let usedCode = false;
 
-    if(this.validateCode(code)) {
-      this.userData.addCode(code);
-      this.questionProgress += 5;
-      usedCode = true;
-    }
+    // if(this.validateCode(code)) {
+    //   this.userData.addCode(code);
+    //   this.questionProgress += 5;
+    //   usedCode = true;
+    // }
+
+    // console.log('this.userData.highScore: ', this.userData.highScore);
+    // console.log('this.questionProgress: ', this.questionProgress);
 
     if( this.userData.highScore < this.questionProgress ) {
       this.userData.setHighScore(this.questionProgress);
       this.database.ref(`users/${this.userData.uid}`).update(this.userData);
 
-      if(usedCode) {
-        this.database.ref(`codes/${code}`).set(codeData);
-      }
+      // if(usedCode) {
+      //   this.database.ref(`codes/${code}`).set(codeData);
+      // }
 
       return true;
     }

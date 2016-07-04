@@ -1,0 +1,8 @@
+<h1>
+  <img src="./img/nadupany-fanusik.png" alt="Nadupaný fanúšik" class="nadupany-fanusik" width="523" height="214">
+</h1>
+
+<div class="button-list button-list-vertical">
+  <button *ngIf="!isLoggedIn"  (click)="onLogin()">Prihlásiť sa cez FB</button>
+  <button *ngIf="isLoggedIn"   (click)="onNavigate('menu')">Vstúpiť do hry</button>
+</div>

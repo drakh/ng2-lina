@@ -44,7 +44,7 @@ export class DataService {
       var newQuestionKey = this.database.ref().child('questions').push().key;
       this.database.ref(`questions/${newQuestionKey}`).set(data)
         .then(() => {
-          console.log(`Question with key ${newQuestionKey} was saved to database.`);
+          // console.log(`Question with key ${newQuestionKey} was saved to database.`);
           observer.next(newQuestionKey);
           observer.complete();
         })
@@ -97,13 +97,13 @@ export class DataService {
     return this.database.ref(`users/${uid}`).once('value');
   }
 
-  allCodes$(): Observable<any> {
-    return new Observable(observer => {
-      this.database.ref('codes').on('value', function(snapshot) {
-        observer.next(snapshot.val());
-      });
-    });
-  }
+  // allCodes$(): Observable<any> {
+  //   return new Observable(observer => {
+  //     this.database.ref('codes').on('value', function(snapshot) {
+  //       observer.next(snapshot.val());
+  //     });
+  //   });
+  // }
 
   allUsers$(): Observable<any> {
     return new Observable(observer => {
