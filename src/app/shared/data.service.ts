@@ -68,6 +68,9 @@ export class DataService {
   }
 
   checkAnswer(questionKey: string, correctAnswer: number): Observable<any> {
+
+    // console.log(`DataService.checkAnswer(${questionKey}, ${correctAnswer})`);
+
     return new Observable(observer => {
       this.database.ref(`answers/${questionKey}`).once('value')
       .then((snapshot) => {
@@ -79,8 +82,9 @@ export class DataService {
         }
         observer.complete();
       })
-      .catch(() => {
-        observer.error(new Error("Error occurred when checking correct answer!"));
+      .catch((error) => {
+        console.log(error);
+        observer.error(error);
       });
     });
   }
@@ -113,25 +117,25 @@ export class DataService {
     });
   }
 
-  // postQuestionFail(questionData: Question) {
-  //   return new Observable(observer => {
-  //     this.database.ref(`questions/${questionData.id}`).once('value')
-  //     .then((snapshot) => {
-  //       if( !snapshot ) {
-  //         observer.complete();
-  //       }
+  postQuestionFail(questionData: Question) {
+    return new Observable(observer => {
+      this.database.ref(`questions/${questionData.id}`).once('value')
+      .then((snapshot) => {
+        if( !snapshot ) {
+          observer.complete();
+        }
 
-  //       let newQuestionData = snapshot.val();
-  //       let timesFailed = newQuestionData.timesFailed || 0;
+        let newQuestionData = snapshot.val();
+        let timesFailed = newQuestionData.timesFailed || 0;
 
-  //       newQuestionData.timesFailed = timesFailed + 1;
+        newQuestionData.timesFailed = timesFailed + 1;
 
-  //       this.database.ref(`questions/${questionData.id}`).update(newQuestionData);
-  //       observer.complete();
-  //     })
-  //     .catch((error) => {
-  //       observer.error(new Error(error));
-  //     });
-  //   });
-  // }
+        this.database.ref(`questions/${questionData.id}`).update(newQuestionData);
+        observer.complete();
+      })
+      .catch((error) => {
+        observer.error(new Error(error));
+      });
+    });
+  }
 }

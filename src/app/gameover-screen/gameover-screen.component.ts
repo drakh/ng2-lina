@@ -30,20 +30,26 @@ export class GameoverScreenComponent implements OnInit {
 
   private howFinished: string;
 
+  private debugText: string;
+
   constructor(
     private _progressService: ProgressService,
     private router: Router,
     private _route: ActivatedRoute
   ) {
-    
+    this.debugText = '';
   }
 
   ngOnInit() {
+    this.debugText += "Initialized|";
     jQuery('body').addClass('empty').removeClass('squirrel');
 
 
     this.howFinished = this._route.snapshot.params['howFinished'];
     console.log('GameoverScreenComponent.howFinished: ', this.howFinished);
+
+
+    this.debugText += `HowFinished: ${this.howFinished}|`;
 
 
     // this.addCodeForm = this._fb.group({
@@ -76,6 +82,7 @@ export class GameoverScreenComponent implements OnInit {
   }
 
   saveQuestionProgress() {
+    this.debugText += `saveQuestionProgress()|`;
     this.isNewHighScore = this._progressService.setQuestionProgress();
     this.isResultKnown = true;
     return this.isNewHighScore;

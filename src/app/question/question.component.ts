@@ -1,4 +1,4 @@
-import { Component, OnInit, OnChanges, EventEmitter, Input, Output } from '@angular/core';
+import { Component, OnInit, OnChanges, DoCheck, EventEmitter, Input, Output } from '@angular/core';
 import { DataService, Question } from '../shared/';
 import  'rxjs/Rx';
 import { Observable } from "rxjs/Observable";
@@ -10,9 +10,15 @@ import { Router } from '@angular/router';
   templateUrl: 'question.component.html',
   styleUrls: ['question.component.css']
 })
-export class QuestionComponent implements OnInit {
+export class QuestionComponent implements OnInit, OnChanges {
 
-  @Input() question: Question;
+  @Input() id: string;
+  @Input() answer1: string;
+  @Input() answer2: string;
+  @Input() answer3: string;
+  @Input() answer4: string;
+  @Input() question: string;
+
   @Output() onTimeRunOut = new EventEmitter();
   @Output() onAnswer: EventEmitter<boolean> = new EventEmitter<boolean>();
 
@@ -28,16 +34,39 @@ export class QuestionComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    console.log('QuestionComponent.ngOnInit');
-    this.onInitTimer();
+    this.canAnswer = true;
+    // alert('QuestionComponent.ngOnInit');
+    // this.initTimer();
   }
 
   ngOnChanges() {
-    console.log('QuestionComponent.ngOnChanges');
+    // alert('QuestionComponent.ngOnChanges');
+    if(this.question) {
+      this.changeQuestion();
+    }
   }
 
-  onCheckAnswer($event) {
+  // ngDoCheck() {
+  //   alert('QuestionComponent.ngDoCheck');
+  // }
 
+  // ngAfterContentInit() {
+  //   alert('QuestionComponent.ngAfterContentInit');
+  // }
+
+  // ngAfterContentChecked() {
+  //   alert('QuestionComponent.ngAfterContentChecked');
+  // }
+
+  // ngAfterViewInit() {
+  //   alert('QuestionComponent.ngAfterViewInit');
+  // }
+
+  // ngAfterViewChecked() {
+  //   alert('QuestionComponent.ngAfterViewChecked');
+  // }
+
+  onCheckAnswer($event) {
     if(!this.canAnswer) {
       return;
     }
@@ -50,10 +79,13 @@ export class QuestionComponent implements OnInit {
     let actualClassName = this.lastClickedButton.className;
     this.lastClickedButton.className = `loading`;
 
-    this._dataService.checkAnswer(this.question.id, answer)
+    this._dataService.checkAnswer(this.id, answer)
     .subscribe({
       next: (result) => {
-        this.questionTimerSubscription.unsubscribe();
+        if(this.questionTimerSubscription) {
+          this.questionTimerSubscription.unsubscribe();
+        }
+        
         result = result ? 'correct' : 'wrong';        
 
         setTimeout(() => {
@@ -63,11 +95,14 @@ export class QuestionComponent implements OnInit {
         setTimeout(() => {
           this.onAnswer.emit(result);
         }, 2000);
+      },
+      error: (error) => {
+        console.error(new Error(error));
       }
     });
   }
 
-  onInitTimer() {
+  initTimer() {
 
     this.remainingTime = 20;
     this.questionTimer$ = Observable.interval(1000);
@@ -81,15 +116,21 @@ export class QuestionComponent implements OnInit {
     });
   }
 
-  changeQuestion(question: Question) {
+  changeQuestion(/*question: Question*/) {
     if(this.lastClickedButton) {
       this.lastClickedButton.className = '';
     }
     
-    this.questionTimerSubscription.unsubscribe();
-    this.question = question;
+    if(this.questionTimerSubscription) {
+      this.questionTimerSubscription.unsubscribe();
+    }
+
+    // this.question = question;
+
+    // alert(this.question);
+
     this.canAnswer = true;
-    this.onInitTimer();
+    this.initTimer();
   }
 
 }

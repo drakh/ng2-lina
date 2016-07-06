@@ -13,8 +13,13 @@ export class AuthService {
   constructor(private _dataService: DataService) {}
 
   signinUserFB() {
+
+    // const fbLoginProvider = new firebase.auth.FacebookAuthProvider();
+    // firebase.auth().signInWithRedirect(fbLoginProvider);
+
     return new Observable(observer => {
       const fbLoginProvider = new firebase.auth.FacebookAuthProvider();
+
       firebase.auth().signInWithPopup(fbLoginProvider).then((result) => {
         localStorage.setItem('token', result.credential.accessToken);
 
@@ -50,6 +55,33 @@ export class AuthService {
       });
     });
   }
+
+  // getFacebookUserData(result) {
+  //   this._dataService.checkIfUserExist(result.user.uid).then((snapshot) => {
+  //     if(snapshot.val()) {
+  //       this.user = new User(
+  //         snapshot.val().uid,
+  //         snapshot.val().displayName,
+  //         snapshot.val().email,
+  //         snapshot.val().photoURL,
+  //         snapshot.val().highScore,
+  //         snapshot.val().codes || new Array()
+  //       );
+  //     }
+  //     else {
+  //       this.user = new User(
+  //         result.user.uid,
+  //         result.user.displayName,
+  //         result.user.email,
+  //         result.user.photoURL,
+  //         0,
+  //         new Array()
+  //       );
+
+  //       this._dataService.saveNewUser( this.getLoggedUserDataAll() );
+  //     }
+  //   });
+  // }
 
   logout() {
     localStorage.removeItem('token');

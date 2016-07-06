@@ -1,4 +1,4 @@
-<!--
+<!-- 
 <form [ngFormModel]="addQuestionForm" (ngSubmit)="onAddQuestionFormSubmit()">
   <div class="input">
     <label for="question">Title</label>
@@ -40,7 +40,18 @@
 </form>
 -->
 
+<div style="color:#fff; max-height:300px; overflow-y: scroll;">
+  <p *ngFor="let message of debugMessages">{{message}}</p>
+</div>
+
 <lina-question
+  [id]="currentQuestionId"
+  [answer1]="currentAnswer1Text"
+  [answer2]="currentAnswer2Text"
+  [answer3]="currentAnswer3Text"
+  [answer4]="currentAnswer4Text"
+  [question]="currentQuestionText"
+
   (onAnswer)="onAnswer($event)"
   (onTimeRunOut)="onGameOver('timeup')">
 </lina-question>
