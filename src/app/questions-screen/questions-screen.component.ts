@@ -1,10 +1,12 @@
-import { AfterViewInit, ViewChild } from '@angular/core';
-import { Component, OnInit } from '@angular/core';
+import { Component, ViewChild, OnInit } from '@angular/core';
 import { FormBuilder, ControlGroup, Validators } from "@angular/common";
 import { RADIO_GROUP_DIRECTIVES } from "ng2-radio-group";
 import { DataService, ProgressService, Question } from '../shared/';
 import { QuestionComponent } from '../question/';
 import { Router } from '@angular/router';
+
+import  'rxjs/Rx';
+import { Observable } from "rxjs/Observable";
 
 declare var _: any;
 declare var jQuery: any;
@@ -18,15 +20,9 @@ declare var jQuery: any;
 })
 export class QuestionsScreenComponent implements OnInit {
 
-  // @ViewChild(QuestionComponent)
-  // private questionComponent: QuestionComponent;
-
-  response: string;
   addQuestionForm: ControlGroup;
   correctAnswer: string;
 
-  showQuestion: boolean;
-  currentQuestionIndex: number;
   currentQuestion: Question;
   questionList: Array<Question>;
 
@@ -38,6 +34,18 @@ export class QuestionsScreenComponent implements OnInit {
   private currentAnswer4Text: string;
 
   private debugMessages: Array<string>;
+
+  private questionTimerSubscription: any;
+  private remainingTime: number;
+  private lastClickedButton;
+  private questionTimer$;
+  private canAnswer: boolean;
+
+  private questionVisible: boolean;
+
+  private changeDetected: boolean;
+
+  private changeDetectorInterval: any;
 
   constructor(
     private _router: Router,
@@ -57,61 +65,43 @@ export class QuestionsScreenComponent implements OnInit {
     //   answer4: ['', Validators.required]
     // });
 
-    this.showQuestion = false;
+    this.questionVisible = false;
+    this.canAnswer = true;
     jQuery('body').addClass('squirrel').removeClass('empty');
-  }
 
-  ngAfterViewInit() {
     this.questionList = [];
     this.onGetQuestionList();
   }
 
-  onAddQuestionFormSubmit() {
-    const questionData: Question = this.addQuestionForm.value;
-    questionData.timesFailed = 0;
+  // onAddQuestionFormSubmit() {
+  //   const questionData: Question = this.addQuestionForm.value;
+  //   questionData.timesFailed = 0;
 
-    this._dataService.postQuestionData(questionData)
-      .subscribe({
-        next: questionId => this.onSaveCorrectAnswer(questionId),
-        error: error => console.error(error),
-        complete: () => this.clearQuestionForm()
-      });
-  }
+  //   this._dataService.postQuestionData(questionData)
+  //     .subscribe({
+  //       next: questionId => this.onSaveCorrectAnswer(questionId),
+  //       error: error => console.error(error),
+  //       complete: () => this.clearQuestionForm()
+  //     });
+  // }
 
-  clearQuestionForm() {
-    this.correctAnswer = null;
+  // clearQuestionForm() {
+  //   this.correctAnswer = null;
 
-    _.each(this.addQuestionForm.controls, (control) => {
-      control.updateValue('');
-      control.setErrors(null);
-    });
-  }
+  //   _.each(this.addQuestionForm.controls, (control) => {
+  //     control.updateValue('');
+  //     control.setErrors(null);
+  //   });
+  // }
 
-  onSaveCorrectAnswer(questionId: string) {
-    this._dataService.postCorrectAnswer(questionId, parseInt(this.correctAnswer))
-      .subscribe({
-        error: error => console.error(error)
-      });
-  }
+  // onSaveCorrectAnswer(questionId: string) {
+  //   this._dataService.postCorrectAnswer(questionId, parseInt(this.correctAnswer))
+  //     .subscribe({
+  //       error: error => console.error(error)
+  //     });
+  // }
 
-  onAnswer(answeredResult: string) {
 
-    // this.debugMessage(`onAnswer(${answeredResult})`);
-
-    let timeOut = 1000;
-
-    if(answeredResult === 'correct') {
-      this._progressService.increaseQuestionProgress();
-      setTimeout(() => {
-        this.setNextQuestionData();
-      }, timeOut);
-    }
-    else if(answeredResult === 'wrong') {      
-      setTimeout(() => {
-        this.onGameOver('wrong');
-      }, timeOut);
-    }
-  }
 
   onGameOver(howFinished: string) {
     if(howFinished === 'wrong') {
@@ -125,36 +115,97 @@ export class QuestionsScreenComponent implements OnInit {
   }
 
   onGetQuestionList() {
-
-    // this.debugMessage('downloading question data...');
-
-    this._dataService.getAllQuestionsData()
+    this._dataService.allQuestionsData$()
       .subscribe({
-        next: (question) => {
-          question[1].id = question[0];
-          this.questionList.push(question[1]);
-          // this.debugMessage(`downloaded question ${question[0]}`);
+        next: (allQuestionsData) => {
+          this.questionList = allQuestionsData;
         },
         complete: () => {
-          // this.questionList = [
-          //   this.questionList[0],
-          //   this.questionList[1],
-          //   this.questionList[2]
-          // ];
-          // this.debugMessage('downloaded question data!');
+          this.prepareQuestionData();
           this.setNextQuestionData();
         }
       });
   }
 
-  setNextQuestionData() {
+  prepareQuestionData() {
+    this.questionList = _.map(this.questionList, (questionData, questionKey) => {
+      questionData.id = questionKey;
+      return questionData;
+    });
+  }
 
+  onCheckAnswer($event) {
+    if(!this.canAnswer) {
+      return;
+    }
+
+    this.canAnswer = false;
+
+    this.lastClickedButton = $event.target;
+
+    let answer = this.lastClickedButton.dataset.answer;
+    let actualClassName = this.lastClickedButton.className;
+    this.lastClickedButton.className = `loading`;
+
+    this._dataService.checkAnswer(this.currentQuestionId, answer)
+    .subscribe({
+      next: (result) => {
+
+        if(this.questionTimerSubscription) {
+          this.questionTimerSubscription.unsubscribe();
+        }
+        
+        result = result ? 'correct' : 'wrong';
+
+        setTimeout(() => {
+          this.lastClickedButton.className = result;
+        }, 1000);
+
+        setTimeout(() => {
+          this.onAnswer(result);
+        }, 2000);
+      },
+      error: (error) => {
+        console.error(new Error(error));
+      }
+    });
+  }
+
+  onAnswer(answeredResult: string) {
+    let timeOut = 1000;    
+
+    if(answeredResult === 'correct') {
+      this._progressService.increaseQuestionProgress();
+      setTimeout(() => {
+        this.resetClickedButton();
+        this.setNextQuestionData();
+      }, timeOut);
+    }
+    else if(answeredResult === 'wrong') {      
+      setTimeout(() => {
+        this.resetClickedButton();
+        this.onGameOver('wrong');
+      }, timeOut);
+    }
+  }
+
+  resetClickedButton() {
+    if(this.lastClickedButton) {
+      console.log(this.lastClickedButton.className);
+      this.lastClickedButton.className = '';
+      console.log(this.lastClickedButton.className);
+    }
+  }
+
+  setNextQuestionData() {
     if(this.questionList.length < 1) {
       this.onGameOver('win');
     }
 
+    this.questionVisible = false;
+
     const questionIndex = Math.floor(Math.random() * this.questionList.length);
-    this.currentQuestion = this.questionList.splice(questionIndex, 1)[0];
+    this.currentQuestion = this.questionList.splice(questionIndex, 1)[0];    
 
     this.currentQuestionId = this.currentQuestion.id;
     this.currentQuestionText = this.currentQuestion.question;
@@ -163,17 +214,35 @@ export class QuestionsScreenComponent implements OnInit {
     this.currentAnswer3Text = this.currentQuestion.answer3;
     this.currentAnswer4Text = this.currentQuestion.answer4;
 
-    // alert(`setting current question: ${this.currentQuestionText}`);
+    if(this.questionTimerSubscription) {
+      this.questionTimerSubscription.unsubscribe();
+    }
 
-    // removes random question from questionList and saves it
-    // if(this.showQuestion) {
-    //   this.questionComponent.changeQuestion(this.currentQuestion);
-    // }
-    
+    this.questionVisible = true;
+    this.canAnswer = true;
+    this.initTimer();
   }
 
-  debugMessage(message: string) {
+  initTimer() {
+
+    this.remainingTime = 20;
+    this.questionTimer$ = Observable.interval(1000);
+    this.questionTimerSubscription = this.questionTimer$.take(20).subscribe({
+      next: () => {
+        --this.remainingTime;
+      },
+      complete: () => {
+        this.onGameOver('timeup');
+      }
+    });
+  }
+
+  debugMessage(message: string, withoutAlert: boolean) {
     this.debugMessages.push(message);
+
+    if(!withoutAlert) {
+      alert(message);
+    }
   }
 
 }

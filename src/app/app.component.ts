@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { ROUTER_DIRECTIVES } from '@angular/router';
 import { AuthService } from "./shared/";
 
@@ -11,23 +11,21 @@ declare var firebase: any;
   styleUrls: ['app.component.css'],
   directives: [ROUTER_DIRECTIVES]
 })
-export class AppComponent  {
+export class AppComponent implements OnInit {
+
+  private debugMessages: Array<string>;
+  protected changeDetectorInterval: any;
+
   constructor(
-    private _authService: AuthService
+    private _authService: AuthService,
+    private _changeDetectorRef: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
-    // firebase.auth().getRedirectResult().then(function(result) {
+  	this._changeDetectorRef.detach();
+  	this.changeDetectorInterval = setInterval(() => {
+      this._changeDetectorRef.detectChanges();
+    }, 500);
 
-    //   console.log('firebase.auth');
-
-    //   if (result.credential) {
-    //     this._authService.getFacebookUserData(result);
-    //   }
-
-    //   var user = result.user;
-    // }).catch(function(error) {
-    //   console.error(error);
-    // });
   }
 }

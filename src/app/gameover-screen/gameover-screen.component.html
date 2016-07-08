@@ -1,8 +1,7 @@
-<!--
-<div>
-  {{debugText}}
-</div>
--->
+<!-- <div *ngIf="debugMessages" style="position:absolute;color:#fff; overflow: visible; pointer-events: none; font-size: 15px; text-align:left">
+  <p style="font-family: 'Lucida Console', 'Courier New', monospace;" *ngFor="let message of debugMessages">{{message}}</p>
+</div> -->
+
 
 <h1>
   <img src="./img/hra-skoncila.png" alt="Hra skončila" class="hra-skoncila">
@@ -41,6 +40,13 @@
 <div class="button-list button-list-vertical">
   <button (click)="onNavigate('menu')">Späť na úvod</button>
 </div>
+
+
+
+
+
+
+
 
 <!--
 <div *ngIf="!isAddCodeFormVisible && codeHelped">

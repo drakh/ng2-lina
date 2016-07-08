@@ -14,7 +14,7 @@ import { IntroScreenComponent } from './intro-screen.component';
 
 describe('Component: IntroScreen', () => {
   it('should create an instance', () => {
-    let component = new IntroScreenComponent(null, null);
+    let component = new IntroScreenComponent(null, null, null);
     expect(component).toBeTruthy();
   });
 });

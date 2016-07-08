@@ -17,14 +17,10 @@ export class DataService {
     this.questionProgress = 0;
   }
 
-  getAllQuestionsData(): Observable<any> {
+  allQuestionsData$(): Observable<any> {
     return new Observable(observer => {
       this.database.ref(`questions`).on('value', (snapshot) => {
-
-        _.each(snapshot.val(), (question, key) => {
-          observer.next([key, question]);
-        });
-
+        observer.next(snapshot.val());
         observer.complete();
       });
     });
@@ -36,6 +32,9 @@ export class DataService {
         .then((snapshot) => {
           observer.next(snapshot.val());
         })
+        .catch((error) => {
+          console.error(error);
+        });
     });
   }
 
@@ -46,10 +45,9 @@ export class DataService {
         .then(() => {
           // console.log(`Question with key ${newQuestionKey} was saved to database.`);
           observer.next(newQuestionKey);
-          observer.complete();
         })
-        .catch(() => {
-          observer.error(new Error("Error occurred when saving the question!"));
+        .catch((error) => {
+          observer.error(error);
         });
     });
   }
@@ -83,7 +81,6 @@ export class DataService {
         observer.complete();
       })
       .catch((error) => {
-        console.log(error);
         observer.error(error);
       });
     });

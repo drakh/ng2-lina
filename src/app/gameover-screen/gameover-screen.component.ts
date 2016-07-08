@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ProgressService } from '../shared';
 import { Router, ActivatedRoute } from '@angular/router';
 
@@ -32,25 +32,30 @@ export class GameoverScreenComponent implements OnInit {
 
   private debugText: string;
 
+  private changeDetectorInterval: any;
+
+  private debugMessages: Array<string>;
+
   constructor(
     private _progressService: ProgressService,
     private router: Router,
     private _route: ActivatedRoute
   ) {
-    this.debugText = '';
+    // this.debugMessages = [];
+    jQuery('body').addClass('empty').removeClass('squirrel');
   }
 
-  ngOnInit() {
-    this.debugText += "Initialized|";
-    jQuery('body').addClass('empty').removeClass('squirrel');
+  // debugMessage(message: string, withoutAlert: boolean) {
+  //   this.debugMessages.push(message);
 
+  //   if(!withoutAlert) {
+  //     alert(message);
+  //   }
+  // }
+
+  ngOnInit() {
 
     this.howFinished = this._route.snapshot.params['howFinished'];
-    console.log('GameoverScreenComponent.howFinished: ', this.howFinished);
-
-
-    this.debugText += `HowFinished: ${this.howFinished}|`;
-
 
     // this.addCodeForm = this._fb.group({
     //   code: ['', Validators.required],
@@ -71,18 +76,13 @@ export class GameoverScreenComponent implements OnInit {
 
     this.currentProgressString = this.setScoreString(this.questionProgress);
     this.highScoreString = this.setScoreString(this.currentHighScore);
-
-    // console.log('this.currentHighScore: ', this.currentHighScore);
-    // console.log('this.questionProgress: ', this.questionProgress);
   }
 
   onNavigate(destination: String) {
-    console.log(`Rules navigating to ${destination} screen.`);
     this.router.navigate([`/${destination}`]);
   }
 
   saveQuestionProgress() {
-    this.debugText += `saveQuestionProgress()|`;
     this.isNewHighScore = this._progressService.setQuestionProgress();
     this.isResultKnown = true;
     return this.isNewHighScore;

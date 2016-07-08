@@ -18,7 +18,7 @@ export class RulesScreenComponent implements OnInit {
   }
 
   onNavigate(destination: String) {
-    console.log(`Rules navigating to ${destination} screen.`);
+    // console.log(`Rules navigating to ${destination} screen.`);
     this.router.navigate([`/${destination}`]);
   }
 

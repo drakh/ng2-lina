@@ -21,7 +21,6 @@ export class AuthService {
       const fbLoginProvider = new firebase.auth.FacebookAuthProvider();
 
       firebase.auth().signInWithPopup(fbLoginProvider).then((result) => {
-        localStorage.setItem('token', result.credential.accessToken);
 
         this._dataService.checkIfUserExist(result.user.uid).then((snapshot) => {
           if(snapshot.val()) {
@@ -47,7 +46,7 @@ export class AuthService {
             this._dataService.saveNewUser( this.getLoggedUserDataAll() );
           }
 
-          observer.complete();
+          observer.next(this.getLoggedUserDataAll());
         });
       })
       .catch(function(error) {
@@ -93,7 +92,7 @@ export class AuthService {
   }
 
   isAuthenticated(): boolean {
-    return (localStorage.getItem('token') !== null && this.user !== undefined);
+    return this.user !== undefined;
   }
 
   getLoggedUserDisplayName(): string {

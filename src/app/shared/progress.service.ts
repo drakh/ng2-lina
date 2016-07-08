@@ -42,6 +42,10 @@ export class ProgressService {
     return this.questionProgress;
   }
 
+  getUserHighscore(): number {
+    return this.userData.highScore;
+  }
+
   // validateCode(code: string) {
 
   //   if(!this.allCodes && code != '') {
@@ -84,7 +88,5 @@ export class ProgressService {
     }
   }
 
-  getUserHighscore(): number {
-    return this.userData.highScore;
-  }
+
 }

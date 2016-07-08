@@ -42,6 +42,10 @@ h1 img {
   }
 }
 
+.nadupany-fanusik {
+  max-height: 170px;
+}
+
 .footer {
   width: 100%;
   position: fixed;
@@ -127,6 +131,9 @@ h1 img {
     .button-list button.loading {
       animation: loading 500ms steps(2) 0s infinite;
     }
+    .button-list button.margined {
+      margin-bottom: 130px;
+    }
 
     @media (min-width: 380px) {
       @keyframes loading {
@@ -153,17 +160,13 @@ h1 img {
         background-position: center bottom;
       }
 
-      .button-list button.margined {
-        margin-bottom: 100px;
-      }
-
       @keyframes loading {
         from {background-position: center 0px;}
         to {background-position: center -86px;}
       }
     }
 
-    lina-question .button-list button {
+    lina-questions-screen .button-list button {
       font-size: 18px;
       text-transform: initial;
     }

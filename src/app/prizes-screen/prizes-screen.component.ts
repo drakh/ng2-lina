@@ -18,7 +18,7 @@ export class PrizesScreenComponent implements OnInit {
   }
 
   onNavigate(destination: String) {
-    console.log(`Prizes navigating to ${destination} screen.`);
+    // console.log(`Prizes navigating to ${destination} screen.`);
     this.router.navigate([`/${destination}`]);
   }
 

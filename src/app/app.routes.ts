@@ -17,14 +17,6 @@ export const routes: RouterConfig = [
   { path: 'kviz', component: QuestionsScreenComponent, canActivate: [AuthGuard] },
   { path: 'vysledky', component: ResultsScreenComponent, canActivate: [AuthGuard] },
   { path: 'gameover/:howFinished', component: GameoverScreenComponent, canActivate: [AuthGuard] }
-
-  // { path: '', component: IntroScreenComponent },
-  // { path: 'menu', component: MenuScreenComponent },
-  // { path: 'pravidla', component: RulesScreenComponent },
-  // { path: 'vyhry', component: PrizesScreenComponent },
-  // { path: 'kviz', component: QuestionsScreenComponent },
-  // { path: 'vysledky', component: ResultsScreenComponent },
-  // { path: 'gameover/:howFinished', component: GameoverScreenComponent }
 ];
 
 export const APP_ROUTER_PROVIDERS = [

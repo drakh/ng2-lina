@@ -14,7 +14,7 @@ import { ResultsScreenComponent } from './results-screen.component';
 
 describe('Component: ResultsScreen', () => {
   it('should create an instance', () => {
-    let component = new ResultsScreenComponent(null, null);
+    let component = new ResultsScreenComponent(null, null, null);
     expect(component).toBeTruthy();
   });
 });
