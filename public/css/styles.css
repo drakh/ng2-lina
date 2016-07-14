@@ -1,7 +1,8 @@
 body {
   font-family: 'Work Sans', sans-serif;
   background-size: cover;
-  background-position: bottom;  
+  background-position: bottom;
+  color: #fff;
 }
 
 body.empty {
@@ -344,6 +345,34 @@ lina-rules-screen p {
   .button-list button.margined {
     margin-bottom: 144px;
   }
+}
 
+.btn {
+  background-image: url('../img/button_bg.svg');
+  background-repeat: no-repeat;
+  background-color: transparent;
+  background-position: center;
+  min-width: 220px;
+  padding: 5px;
+}
+
+.btn:active {
+  background-image: url('../img/button_bg.svg');
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+
+.btn:hover,
+.btn:focus {
+  outline: none;
+  color: #fff;
+  text-decoration: underline;
+}
+
+#draw-result {
 
 }
+  #draw-result td,
+  #draw-result th {
+    padding: 5px 15px;
+  }

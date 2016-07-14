@@ -3,6 +3,7 @@ import  'rxjs/Rx';
 import { Observable } from "rxjs/Observable";
 import { User } from "./user.model";
 import { Question } from "./question.model";
+import { Http } from '@angular/http';
 
 declare var _: any;
 declare var firebase: any;
@@ -12,7 +13,9 @@ export class DataService {
   private database;
   private questionProgress: number;
 
-  constructor () {
+  constructor (
+    private _http: Http
+  ) {
     this.database = firebase.database();
     this.questionProgress = 0;
   }
@@ -106,10 +109,21 @@ export class DataService {
   //   });
   // }
 
-  allUsers$(): Observable<any> {
+  allUsers$(): Observable<{}> {
     return new Observable(observer => {
       this.database.ref('users').on('value', function(snapshot) {
         observer.next(snapshot.val());
+      });
+    });
+  }
+
+  users$(): Observable<{}> {
+    return new Observable(observer => {
+      this.database.ref('users').on('value', function(snapshot) {
+        _.each(snapshot.val(), (userData: User) => {
+          observer.next(<User>userData);
+        });
+        observer.complete();
       });
     });
   }
@@ -135,4 +149,35 @@ export class DataService {
       });
     });
   }
+
+  randomNumber$(numberOfContestants: number): Observable<any> {
+
+    const data = {
+      "jsonrpc": "2.0",
+      "method": "generateIntegers",
+      "params": {
+          "apiKey": "04f7266a-6579-430a-95c7-4010fa823a02",
+          "n": 1,
+          "min": 0,
+          "max": numberOfContestants -1,
+          "replacement": true
+      },
+      "id": 1
+    };
+
+    return this._http.post('https://api.random.org/json-rpc/1/invoke', JSON.stringify(data));
+  }
+
+  resetWeek$(): Observable<any> {
+
+
+
+    this.allUsers$()
+
+    return new Observable(observer => {
+
+    });
+  }
+
+
 }

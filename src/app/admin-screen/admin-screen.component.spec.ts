@@ -10,11 +10,11 @@ import {
   async, inject
 } from '@angular/core/testing';
 
-import { MenuScreenComponent } from './menu-screen.component';
+import { AdminScreenComponent } from './admin-screen.component';
 
-describe('Component: MenuScreen', () => {
+describe('Component: AdminScreen', () => {
   it('should create an instance', () => {
-    let component = new MenuScreenComponent(null, null, null);
+    let component = new AdminScreenComponent(null, null);
     expect(component).toBeTruthy();
   });
 });

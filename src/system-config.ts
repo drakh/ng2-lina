@@ -44,6 +44,7 @@ const barrels: string[] = [
   'app/question',
   'app/signin-screen',
   'app/gameover-screen',
+  'app/admin-screen',
   /** @cli-barrel */
 ];
 

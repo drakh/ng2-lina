@@ -39,6 +39,7 @@ var barrels = [
     'app/question',
     'app/signin-screen',
     'app/gameover-screen',
+    'app/admin-screen',
 ];
 var cliSystemConfigPackages = {};
 barrels.forEach(function (barrelName) {

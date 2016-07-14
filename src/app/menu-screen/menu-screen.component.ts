@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ProgressService } from "../shared/";
+import { AuthService, ProgressService } from "../shared/";
 
 declare var jQuery: any;
 
@@ -12,19 +12,21 @@ declare var jQuery: any;
 })
 export class MenuScreenComponent implements OnInit {
 
+  private isAdmin: boolean;
+
   constructor(
     private _router: Router,
-    private _progressService: ProgressService
+    private _progressService: ProgressService,
+    private _authService: AuthService
   ) {}
 
   ngOnInit() {
-    // console.log('MenuScreenComponent initialized');
     jQuery('body').addClass('empty').removeClass('squirrel');
     this._progressService.resetQuestionProgress();
+    this.isAdmin = this._authService.isAdmin();
   }
 
   onNavigate(destination: String) {
-    // console.log(`Menu navigating to ${destination} screen.`);
     this._router.navigate([`/${destination}`]);
   }
 }

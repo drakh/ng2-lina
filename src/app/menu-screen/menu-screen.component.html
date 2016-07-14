@@ -11,4 +11,5 @@
   <button (click)="onNavigate('vysledky')">Výsledky</button>
   <button (click)="onNavigate('vyhry')">Výhry</button>
   <button (click)="onNavigate('pravidla')">Pravidlá hry</button>
+  <button *ngIf="isAdmin" (click)="onNavigate('admin')">Admin</button>
 </div>

@@ -25,6 +25,8 @@ export class IntroScreenComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit():any {
+    // this.debugMessage('IntroScreenComponent.ngOnInit', true);
+    
     this.changeDetectorInterval = setInterval(() => {
       this._changeDetectorRef.detectChanges();
     }, 1000);
@@ -43,24 +45,24 @@ export class IntroScreenComponent implements OnInit, OnDestroy {
   }
 
   onLogin() {
-    this.debugMessage('IntroScreenComponent.onLogin', true);
+    // this.debugMessage('IntroScreenComponent.onLogin', true);
 
     this._authService.signinUserFB().subscribe({
       next: () => {
-        this.debugMessage('IntroScreenComponent.onLogin next()', true);
+        // this.debugMessage('IntroScreenComponent.onLogin next()', true);
         this.isLoggedIn = this._authService.isAuthenticated();
-        this.debugMessage(`IntroScreenComponent.isLoggedIn: ${this.isLoggedIn}`, true);
+        // this.debugMessage(`IntroScreenComponent.isLoggedIn: ${this.isLoggedIn}`, true);
       },
       error: (error) => console.error(new Error(error))
     });
   }
 
   debugMessage(message: string, withoutAlert: boolean) {
-    // this.debugMessages.push(message);
+    this.debugMessages.push(message);
   }
 
   onNavigate(destination: String) {
-    // console.log(`Intro navigating to ${destination} screen.`);
+    console.log(`Intro navigating to ${destination} screen.`);
     this.router.navigate([`/${destination}`]);
   }
 

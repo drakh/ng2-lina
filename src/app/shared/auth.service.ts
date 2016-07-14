@@ -22,6 +22,8 @@ export class AuthService {
 
       firebase.auth().signInWithPopup(fbLoginProvider).then((result) => {
 
+        console.log(result);
+
         this._dataService.checkIfUserExist(result.user.uid).then((snapshot) => {
           if(snapshot.val()) {
             this.user = new User(
@@ -115,5 +117,15 @@ export class AuthService {
     else {
       return null;
     }
+  }
+
+  isAdmin(): boolean {
+    const adminIdsArray: Array<String> = [
+      'qRXpAAKBOegcQQRmbjOCKpdz37g1'
+    ];
+
+    const loggedUserId: String = this.getLoggedUserData('uid');
+
+    return adminIdsArray.indexOf(loggedUserId) !== -1;
   }
 }
