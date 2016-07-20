@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from "../shared/";
+import { User, AuthService } from "../shared/";
 
 declare var firebase: any;
 declare var jQuery: any;
@@ -25,7 +25,6 @@ export class IntroScreenComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit():any {
-    // this.debugMessage('IntroScreenComponent.ngOnInit', true);
     
     this.changeDetectorInterval = setInterval(() => {
       this._changeDetectorRef.detectChanges();
@@ -47,14 +46,25 @@ export class IntroScreenComponent implements OnInit, OnDestroy {
   onLogin() {
     // this.debugMessage('IntroScreenComponent.onLogin', true);
 
-    this._authService.signinUserFB().subscribe({
-      next: () => {
-        // this.debugMessage('IntroScreenComponent.onLogin next()', true);
-        this.isLoggedIn = this._authService.isAuthenticated();
-        // this.debugMessage(`IntroScreenComponent.isLoggedIn: ${this.isLoggedIn}`, true);
-      },
-      error: (error) => console.error(new Error(error))
-    });
+    // this._authService.signinUserFB().subscribe({
+    //   next: () => {
+    //     // this.debugMessage('IntroScreenComponent.onLogin next()', true);
+    //     this.isLoggedIn = this._authService.isAuthenticated();
+    //     // this.debugMessage(`IntroScreenComponent.isLoggedIn: ${this.isLoggedIn}`, true);
+    //   },
+    //   error: (error) => console.error(new Error(error))
+    // });
+
+    this._authService.signinUserFB_2$()
+      .filter((user: User) => user != null && user.uid != undefined)
+      .take(1)
+      .subscribe({
+        next: (user: User) => {
+          this.isLoggedIn = true;
+        },
+        error: (error) => console.error(new Error(error))
+      });
+
   }
 
   debugMessage(message: string, withoutAlert: boolean) {

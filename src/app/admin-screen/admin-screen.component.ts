@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { DataService, User } from '../shared/';
+import { DataService, User, Question } from '../shared/';
 import { Response } from '@angular/http';
 
 import  'rxjs/Rx';
@@ -23,22 +23,16 @@ export class AdminScreenComponent implements OnInit {
   private drawResult: number;
   private randomNumbers: Array<number>;
 
+  private questions: Array<Question>;
+
   constructor(
     private _router: Router,
     private _dataService: DataService
   ) {}
 
   ngOnInit() {
-    this.users = [];
-
-    console.log(typeof this.selectedUser);
-
-    this._dataService.users$()
-      .subscribe({
-        next: (userData: User) => { this.users.push(userData) },
-        error: error => console.error(error),
-        complete: () => { this.handleUsers() }
-      });
+    this.initUsers();
+    this.initQuestions();
   }
 
   onNavigate(destination: String) {
@@ -48,7 +42,11 @@ export class AdminScreenComponent implements OnInit {
   /** 
   * Sorts users list and populate new user list filtered by topScore
   */
-  handleUsers() {
+  handleUsers(allUsers: Array<User>) {
+    this.users = [];
+    _.each(allUsers, (userData: User) => {
+      this.users.push(<User>userData);
+    });
     this.users = _.sortBy(this.users, 'highScore').reverse();
     this.topScore = this.users[0].highScore;
     this.users = _.sortBy(this.users, 'displayName');
@@ -56,23 +54,49 @@ export class AdminScreenComponent implements OnInit {
   }
 
   onDraw() {
-    this._dataService.randomNumber$(this.topScoreUsers.length-1).subscribe({
-      next: (response: Response) => {
-        this.drawResult = <number>response.json().result.random.data[0];
-        console.log(`Picked random number between 0 and ${this.topScoreUsers.length-1}: ${this.drawResult}.`);
-      }
-    });
+    if(this.topScoreUsers.length > 1) {
+      this._dataService.randomNumber$(this.topScoreUsers.length-1).subscribe({
+        next: (response: Response) => {
+          if(response.json().result) {
+            this.drawResult = <number>response.json().result.random.data[0];
+            console.log(`Picked random number between 0 and ${this.topScoreUsers.length-1}: ${this.drawResult}.`);
+          }        
+        }
+      });
+    }
+    else {
+      this.drawResult = 0;
+    }
+  }
+
+  initUsers() {
+    this._dataService.allUsers$()
+      .subscribe({
+        next: (allUsers: Array<User>) => {
+          this.handleUsers(allUsers);
+        },
+        error: error => console.error(error),
+      });
+  }
+
+  initQuestions() {
+    this._dataService.allQuestions$()
+      .subscribe({
+        next: (allQuestions: Array<Question>) => {
+          this.questions = _.sortBy(allQuestions, 'timesFailed').reverse();
+        },
+        error: error => console.error(error),
+      });
   }
 
   onUserSelect(event) {
-    console.log(typeof event);
     this.selectedUser = _.find(this.users, (user: User) => user.uid == event.target.dataset.uid);
   }
 
   onResetWeek() {
-    this._dataService.resetWeek$().subscribe({
-      next: () => {}
-    });
+    if (window.confirm("Naozaj chceš všetkým resetovať body?")) { 
+      this._dataService.resetWeek();
+    }
   }
 
 }

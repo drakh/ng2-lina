@@ -5,7 +5,7 @@
 <div class="col-xs-12 col-md-offset-2 col-md-8">
   <div class="row">
     <div class="col-xs-12 col-md-6">
-      <h3>Losovanie (top score: {{topScore}})</h3>
+      <h3>Losovanie (top score: {{topScore}})</h3>      
       <button
         (click)="onDraw()"
         class="btn btn-deafult">{{ drawResult == undefined ? 'Losovať' : 'Losovať znova' }}</button>
@@ -27,7 +27,7 @@
     <div class="col-xs-12 col-md-6">
       <h3>Zoznam hráčov</h3>
       <div id="users-list-container">
-        <div class="list-group" *ngIf="topScoreUsers !== undefined">
+        <div class="list-group" *ngIf="users !== undefined">
           <a
             (click)="onUserSelect($event)"
             *ngFor="let user of users"
@@ -35,6 +35,10 @@
             class="list-group-item">{{user.displayName}} - {{user.highScore}}</a>
         </div>
       </div>
+
+      <button
+        (click)="onResetWeek()"
+        class="btn btn-deafult">Reset score</button>
 
       <div id="user-detail" *ngIf="selectedUser">
         <div class="thumbnail">
@@ -49,6 +53,19 @@
   </div>
   <hr>
 
+  <div class="row">
+    <div class="col-xs-12 col-md-6"></div>
+    <div class="col-xs-12 col-md-6">
+      <h3>Otázky <small>zoradené podľa obtiažnosti</small></h3>
+      <div id="questions-list-container">
+        <div class="list-group" *ngIf="questions !== undefined">
+          <a
+            *ngFor="let question of questions"
+            class="list-group-item">{{question.timesFailed}} - {{question.question}}</a>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div class="button-list button-list-vertical">

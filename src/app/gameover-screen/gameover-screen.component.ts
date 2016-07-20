@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ProgressService } from '../shared';
+import { ProgressService, User } from '../shared';
 import { Router, ActivatedRoute } from '@angular/router';
 
 declare var jQuery: any;
@@ -12,29 +12,19 @@ declare var jQuery: any;
 })
 export class GameoverScreenComponent implements OnInit {
 
-  // private isAddCodeFormVisible: boolean;
   private isResultKnown: boolean;
   private isNewHighScore: boolean;
-  // private codeHelped: boolean;
-  // private isCodeValid: boolean;
 
-  private currentHighScore: number;
-  private questionProgress: number;
-  private currentProgressString: string;
-  private highScoreString: string;
+  private savedHighScore: number;
+  private ingameHighScore: number;
 
-  // private code: string;
-  private date: string;
-
-  // private addCodeForm: ControlGroup;
+  private ingameHighScoreString: string;
+  private savedHighScoreString: string;
 
   private howFinished: string;
 
-  private debugText: string;
-
-  private changeDetectorInterval: any;
-
-  private debugMessages: Array<string>;
+  // private debugText: string;
+  // private debugMessages: Array<string>;
 
   constructor(
     private _progressService: ProgressService,
@@ -56,52 +46,41 @@ export class GameoverScreenComponent implements OnInit {
   ngOnInit() {
 
     this.howFinished = this._route.snapshot.params['howFinished'];
-
-    // this.addCodeForm = this._fb.group({
-    //   code: ['', Validators.required],
-    //   date: ['', Validators.required],
-    // });
-
-    // this.code = '';
-    // this.date = '';
-
-    // this.isCodeValid = true;
-    // this.isAddCodeFormVisible = true;
     this.isResultKnown = false;
-    // this.codeHelped = false;
 
-    this.questionProgress = this._progressService.getQuestionProgress();
-    this.currentHighScore = this._progressService.getUserHighscore();
-    this.saveQuestionProgress();
+    this.ingameHighScore = this._progressService.getIngameHighScore();
+    // this.savedHighScore = this._progressService.getSavedHighscore();
 
-    this.currentProgressString = this.setScoreString(this.questionProgress);
-    this.highScoreString = this.setScoreString(this.currentHighScore);
+    this._progressService.loggedUser$().subscribe({
+      next: (user: User) => {
+        if(!user || user.highScore === undefined) {
+          return;
+        }
+
+        this.savedHighScore = user.highScore;
+        this.checkIfNewHighScore();
+        this.ingameHighScoreString = this.setScoreString(this.ingameHighScore);
+        this.savedHighScoreString = this.setScoreString(this.savedHighScore);
+      }
+    });    
   }
 
   onNavigate(destination: String) {
     this.router.navigate([`/${destination}`]);
   }
 
-  saveQuestionProgress() {
-    this.isNewHighScore = this._progressService.setQuestionProgress();
-    this.isResultKnown = true;
-    return this.isNewHighScore;
-  }
+  checkIfNewHighScore() {
 
-  // onAddCodeFormSubmit() {
-  //   this.isCodeValid = true;
-  //   if(this._progressService.validateCode(this.code)) {
-  //     this.isAddCodeFormVisible = false;
-  //     this.codeHelped = this.saveQuestionProgress();
-  //     this.questionProgress = this._progressService.getQuestionProgress();
-  //     this.currentHighScore = this._progressService.getUserHighscore();
-  //     this.currentProgressString = this.setScoreString(this.questionProgress);
-  //     this.highScoreString = this.setScoreString(this.currentHighScore);
-  //   }
-  //   else {
-  //     this.isCodeValid = false;
-  //   }
-  // }
+    if(this.savedHighScore < this.ingameHighScore) {
+      this.isNewHighScore = true;
+      this._progressService.setQuestionProgress();
+    }
+    else {
+      this.isNewHighScore = false;
+    }
+
+    this.isResultKnown = true;
+  }
 
   setScoreString(scoreNumber: number): string {
     if( jQuery.inArray(scoreNumber, [2, 3, 4]) != -1 ) {
@@ -113,6 +92,10 @@ export class GameoverScreenComponent implements OnInit {
     else {
       return 'bodov';
     }
+  }
+
+  isScoreDataAvailable() {
+    return this.savedHighScore != undefined && this.ingameHighScore != undefined;
   }
 
 }

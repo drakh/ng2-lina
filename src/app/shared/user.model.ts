@@ -4,8 +4,7 @@ export class User {
     public displayName: string,
     public email: string,
     public photoURL: string,
-    public highScore: number,
-    public codes: Array<string>
+    public highScore: number
   ) { }
 
   getDisplayName(): string {
@@ -13,16 +12,6 @@ export class User {
   }
 
   setHighScore(value: number): void {
-    console.log(this.highScore + ':' + value);
     this.highScore = value;
   }
-
-  addCode(code: string): void {
-    this.codes.push(code);
-  }
-
-  getCodes(): Array<string> {
-    return this.codes;
-  }
-
 };

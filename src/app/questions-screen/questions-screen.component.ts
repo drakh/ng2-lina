@@ -175,7 +175,7 @@ export class QuestionsScreenComponent implements OnInit {
     let timeOut = 1000;    
 
     if(answeredResult === 'correct') {
-      this._progressService.increaseQuestionProgress();
+      this._progressService.increaseIngameHighScore();
       setTimeout(() => {
         this.resetClickedButton();
         this.setNextQuestionData();
@@ -191,9 +191,7 @@ export class QuestionsScreenComponent implements OnInit {
 
   resetClickedButton() {
     if(this.lastClickedButton) {
-      console.log(this.lastClickedButton.className);
       this.lastClickedButton.className = '';
-      console.log(this.lastClickedButton.className);
     }
   }
 

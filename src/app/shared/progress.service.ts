@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs/Observable";
+import { BehaviorSubject } from "rxjs/BehaviorSubject";
 import { User } from "./user.model";
 import { AuthService, DataService } from './';
 import  'rxjs/Rx';
@@ -10,83 +11,46 @@ declare var firebase: any;
 @Injectable()
 export class ProgressService {
   private database;
-  private questionProgress: number;
+  private ingameHighScore: number;
   private highScore: number;
-  private userData: User;
+  private user: User;
   private allCodes: {};
 
   constructor (
-    private _authService: AuthService,
-    private _dataService: DataService
+    private _authService: AuthService
   ) {
     this.database = firebase.database();
-    this.questionProgress = 0;
-    this.userData = this._authService.getLoggedUserDataAll();
-
-    // this._dataService.allCodes$().subscribe({
-    //   next: (allCodes) => this.allCodes = allCodes,
-    //   error: (error) => console.error(error)
-    // });
+    this.ingameHighScore = 0;
+    this.user = this._authService.getLoggedUserDataAll();
   }
 
-  increaseQuestionProgress() {
-    this.questionProgress++;
+  increaseIngameHighScore() {
+    this.ingameHighScore++;
   }
 
-  resetQuestionProgress() {
-    // console.log('resetting actual question progress');
-    this.questionProgress = 0;
+  resetIngameHighScore() {
+    this.ingameHighScore = 0;
   }
 
-  getQuestionProgress(): number {
-    return this.questionProgress;
+  getIngameHighScore(): number {
+    return this.ingameHighScore;
   }
 
-  getUserHighscore(): number {
-    return this.userData.highScore;
+  getSavedHighscore(): number {
+    return this._authService.getLoggedUserData('highScore');
   }
 
-  // validateCode(code: string) {
-
-  //   if(!this.allCodes && code != '') {
-  //     return true;
-  //   }
-
-  //   return code != '' && !_.contains(Object.keys(this.allCodes), code);
-  // }
-
-  setQuestionProgress(/*code: string, date: string*/): boolean {
-
-    // const codeData = {
-    //   uid: this.userData.uid,
-    //   date: date
-    // };
-
-    // let usedCode = false;
-
-    // if(this.validateCode(code)) {
-    //   this.userData.addCode(code);
-    //   this.questionProgress += 5;
-    //   usedCode = true;
-    // }
-
-    // console.log('this.userData.highScore: ', this.userData.highScore);
-    // console.log('this.questionProgress: ', this.questionProgress);
-
-    if( this.userData.highScore < this.questionProgress ) {
-      this.userData.setHighScore(this.questionProgress);
-      this.database.ref(`users/${this.userData.uid}`).update(this.userData);
-
-      // if(usedCode) {
-      //   this.database.ref(`codes/${code}`).set(codeData);
-      // }
-
-      return true;
-    }
-    else {
-      return false;
-    }
+  loggedUser$(): BehaviorSubject<User> {
+    const userSubject: BehaviorSubject<User> = this._authService.getLoggedUserDataAll$();
+    console.log(userSubject);
+    return userSubject;
   }
 
+  setQuestionProgress(): void {
+    this._authService.setLoggedUserData('highScore', this.ingameHighScore);
 
+    this.database
+      .ref(`users/${this.user.uid}`)
+        .update(this._authService.getLoggedUserDataAll());
+  }
 }

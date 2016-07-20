@@ -3,98 +3,97 @@ import { DataService } from "./data.service";
 import { User } from "./user.model";
 import  'rxjs/Rx';
 import { Observable } from "rxjs/Observable";
+import { BehaviorSubject } from "rxjs/BehaviorSubject";
+import { environment } from '../';
+
 declare var firebase: any;
 
 @Injectable()
 export class AuthService {
-  private _userLoggedOut = new EventEmitter<any>();
-  public user: User
+  private database;
+  public user: User;
+  private userSubject: BehaviorSubject<User>;
 
-  constructor(private _dataService: DataService) {}
+  constructor(private _dataService: DataService) {
+    this.database = firebase.database();
+  }
 
-  signinUserFB() {
+  // signinUserFB() {
 
-    // const fbLoginProvider = new firebase.auth.FacebookAuthProvider();
-    // firebase.auth().signInWithRedirect(fbLoginProvider);
+  //   return new Observable(observer => {
+  //     const fbLoginProvider = new firebase.auth.FacebookAuthProvider();
 
-    return new Observable(observer => {
-      const fbLoginProvider = new firebase.auth.FacebookAuthProvider();
+  //     firebase.auth().signInWithPopup(fbLoginProvider).then((result) => {
 
-      firebase.auth().signInWithPopup(fbLoginProvider).then((result) => {
+  //       this._dataService.checkIfUserExist(result.user.uid).then((snapshot) => {
 
-        console.log(result);
+  //         if(snapshot.val()) {
+  //           this.user = new User(
+  //             snapshot.val().uid,
+  //             snapshot.val().displayName,
+  //             snapshot.val().email,
+  //             snapshot.val().photoURL,
+  //             snapshot.val().highScore
+  //           );
+  //         }
+  //         else {
+  //           this.user = new User(
+  //             result.user.uid,
+  //             result.user.displayName,
+  //             result.user.email,
+  //             result.user.photoURL,
+  //             0
+  //           );
 
-        this._dataService.checkIfUserExist(result.user.uid).then((snapshot) => {
-          if(snapshot.val()) {
-            this.user = new User(
-              snapshot.val().uid,
-              snapshot.val().displayName,
-              snapshot.val().email,
-              snapshot.val().photoURL,
-              snapshot.val().highScore,
-              snapshot.val().codes || new Array()
-            );
-          }
-          else {
-            this.user = new User(
+  //           this._dataService.saveNewUser( this.getLoggedUserDataAll() );
+  //         }
+
+  //         observer.next(this.getLoggedUserDataAll());
+  //       });
+  //     })
+  //     .catch(function(error) {
+  //       observer.error(error);
+  //     });
+  //   });
+  // }
+
+  signinUserFB_2$(): BehaviorSubject<User> {
+
+    this.userSubject = new BehaviorSubject<User>(this.user);
+    const fbLoginProvider = new firebase.auth.FacebookAuthProvider();
+
+    firebase.auth().signInWithPopup(fbLoginProvider).then((result) => {
+
+      this._dataService.user$(result.user.uid).subscribe({
+        next: (user: User) => {
+
+          this.user = user;
+
+          if(!this.user) {
+            console.log('There is no user! Creating one...');
+            const newUser = new User(
               result.user.uid,
               result.user.displayName,
               result.user.email,
               result.user.photoURL,
-              0,
-              new Array()
+              0
             );
-
-            this._dataService.saveNewUser( this.getLoggedUserDataAll() );
+            this._dataService.saveNewUser(newUser);
           }
-
-          observer.next(this.getLoggedUserDataAll());
-        });
-      })
-      .catch(function(error) {
-        observer.error(new Error(`${error.code}: ${error.message}`));
+          else {
+            this.userSubject.next(<User>this.user);
+          }
+        }
       });
-    });
-  }
 
-  // getFacebookUserData(result) {
-  //   this._dataService.checkIfUserExist(result.user.uid).then((snapshot) => {
-  //     if(snapshot.val()) {
-  //       this.user = new User(
-  //         snapshot.val().uid,
-  //         snapshot.val().displayName,
-  //         snapshot.val().email,
-  //         snapshot.val().photoURL,
-  //         snapshot.val().highScore,
-  //         snapshot.val().codes || new Array()
-  //       );
-  //     }
-  //     else {
-  //       this.user = new User(
-  //         result.user.uid,
-  //         result.user.displayName,
-  //         result.user.email,
-  //         result.user.photoURL,
-  //         0,
-  //         new Array()
-  //       );
+    })
+    .catch(function(error) {});
 
-  //       this._dataService.saveNewUser( this.getLoggedUserDataAll() );
-  //     }
-  //   });
-  // }
-
-  logout() {
-    localStorage.removeItem('token');
-    this._userLoggedOut.emit(null);
-  }
-
-  getLoggedOutEvent(): EventEmitter<any> {
-    return this._userLoggedOut;
+    return this.userSubject;
   }
 
   isAuthenticated(): boolean {
-    return this.user !== undefined;
+    return this.user != undefined;
   }
 
   getLoggedUserDisplayName(): string {
@@ -106,12 +105,22 @@ export class AuthService {
     }
   }
 
-  getLoggedUserData(key: string): string {
+  setLoggedUserData(key: string, value: any): void {
+    if(this.user[key] != undefined) {
+      this.user[key] = value;
+    }
+  }
+
+  getLoggedUserData(key: string): any {
     return this.user[key];
   }
 
+  getLoggedUserDataAll$(): BehaviorSubject<any> {
+    return this.userSubject;
+  }
+
   getLoggedUserDataAll(): User {
-    if( this.isAuthenticated() && this.user != null ) {
+    if( this.isAuthenticated() ) {
       return this.user;
     }
     else {
@@ -120,9 +129,20 @@ export class AuthService {
   }
 
   isAdmin(): boolean {
-    const adminIdsArray: Array<String> = [
-      'qRXpAAKBOegcQQRmbjOCKpdz37g1'
-    ];
+    const adminIdsArray: Array<String> = [];
+
+    if(environment.production) {
+      adminIdsArray.push(
+        'nrOw1J2JH0cfSvMBOYANNFsjn902', // MH
+        '89Q59uqjhWfkGMTLtjjqTqZA7K82', // BJ
+        'qRXpAAKBOegcQQRmbjOCKpdz37g1' // MB
+      );
+    }
+    else {
+      adminIdsArray.push(
+        'tkanysdviQSGU0NY3fPuofP0J0O2' // MB
+      );
+    }
 
     const loggedUserId: String = this.getLoggedUserData('uid');
 

@@ -14,7 +14,13 @@
 }
 
 #users-list-container {
-  max-height: 247px;
+  max-height: 165px;
+  overflow-y: scroll;
+  margin-bottom: 15px;
+}
+
+#questions-list-container {
+  max-height: 180px;
   overflow-y: scroll;
   margin-bottom: 15px;
 }

@@ -250,7 +250,7 @@ lina-results-screen p {
 
 #results-list-holder {
   max-width: 100%;
-  width: 430px;
+  width: 480px;
   max-height: 340px;
   margin: 0 auto 30px auto;
   overflow-y: scroll;

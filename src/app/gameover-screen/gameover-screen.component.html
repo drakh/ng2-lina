@@ -2,51 +2,48 @@
   <p style="font-family: 'Lucida Console', 'Courier New', monospace;" *ngFor="let message of debugMessages">{{message}}</p>
 </div> -->
 
-
 <h1>
   <img src="./img/hra-skoncila.png" alt="Hra skončila" class="hra-skoncila">
 </h1>
 
-<div *ngIf="isNewHighScore && howFinished == 'wrong' && isResultKnown">
-  <p>Síce si neodpovedal správne, ale zvýšil si si skóre, gratulujeme!</p>    
-</div>
+<div *ngIf="isResultKnown">
 
-<div *ngIf="!isNewHighScore && howFinished == 'wrong' && isResultKnown">
-  <p>Škoda, odpovedal si nesprávne. Skús znova.</p>    
-</div>
-
-<div *ngIf="isNewHighScore && howFinished == 'timeup' && isResultKnown">
-  <p>Síce si nestihol odpovedať, ale zvýšil si si skóre, gratulujeme!</p>    
-</div>
-
-<div *ngIf="howFinished == 'win'">
-  <p>Odpovedal si na všetky otázky, gratulujeme!</p>    
-</div>
-
-<div *ngIf="!isNewHighScore && howFinished == 'timeup' && isResultKnown">
-  <p>Škoda, nestihol si odpovedať. Skús znova.</p>
-</div>
-
-<div id="scores" *ngIf="currentHighScore != undefined && questionProgress != undefined">
-  <p>Nahral si {{questionProgress}} {{currentProgressString}}.</p>
-  <div *ngIf="currentHighScore >= questionProgress">
-    <p>Tvoje najvyššie skóre {{[2,3,4].indexOf(currentHighScore) != -1 ? 'sú':'je'}} {{currentHighScore}} {{highScoreString}}.</p>
+  <div *ngIf="howFinished == 'wrong' && isNewHighScore">
+    <p>Síce si neodpovedal správne, ale zvýšil si si skóre, gratulujeme!</p>    
   </div>
-  <div *ngIf="currentHighScore < questionProgress">
-    <p>Prekonal si svoje skóre {{currentHighScore}} {{highScoreString}}.</p>
+
+  <div *ngIf="howFinished == 'wrong' && !isNewHighScore">
+    <p>Škoda, odpovedal si nesprávne. Skús znova.</p>    
+  </div>
+
+  <div *ngIf="howFinished == 'timeup' && isNewHighScore">
+    <p>Síce si nestihol odpovedať, ale zvýšil si si skóre, gratulujeme!</p>    
+  </div>
+
+  <div *ngIf="howFinished == 'win'">
+    <p>Odpovedal si na všetky otázky, gratulujeme!</p>    
+  </div>
+
+  <div *ngIf="howFinished == 'timeup' && !isNewHighScore">
+    <p>Škoda, nestihol si odpovedať. Skús znova.</p>
+  </div>
+
+  <div id="scores" *ngIf="isScoreDataAvailable()">
+    <p>Nahral si {{ingameHighScore}} {{ingameHighScoreString}}.</p>
+
+    <div *ngIf="!isNewHighScore">
+      <p>Tvoje najvyššie skóre {{[2,3,4].indexOf(savedHighScore) != -1 ? 'sú':'je'}} {{savedHighScore}} {{savedHighScoreString}}.</p>
+    </div>
+
+    <div *ngIf="isNewHighScore">
+      <p>Prekonal si svoje skóre {{savedHighScore}} {{savedHighScoreString}}.</p>
+    </div>
   </div>
 </div>
 
 <div class="button-list button-list-vertical">
   <button (click)="onNavigate('menu')">Späť na úvod</button>
 </div>
-
-
-
-
-
-
-
 
 <!--
 <div *ngIf="!isAddCodeFormVisible && codeHelped">

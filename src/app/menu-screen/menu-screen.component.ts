@@ -22,7 +22,7 @@ export class MenuScreenComponent implements OnInit {
 
   ngOnInit() {
     jQuery('body').addClass('empty').removeClass('squirrel');
-    this._progressService.resetQuestionProgress();
+    this._progressService.resetIngameHighScore();
     this.isAdmin = this._authService.isAdmin();
   }
 

@@ -117,6 +117,14 @@ export class DataService {
     });
   }
 
+  user$(uid: string): Observable<{}> {
+    return new Observable(observer => {
+      this.database.ref(`users/${uid}`).on('value', function(snapshot) {
+        observer.next(snapshot.val());
+      });
+    });
+  }
+
   users$(): Observable<{}> {
     return new Observable(observer => {
       this.database.ref('users').on('value', function(snapshot) {
@@ -159,7 +167,7 @@ export class DataService {
           "apiKey": "04f7266a-6579-430a-95c7-4010fa823a02",
           "n": 1,
           "min": 0,
-          "max": numberOfContestants -1,
+          "max": numberOfContestants,
           "replacement": true
       },
       "id": 1
@@ -168,16 +176,26 @@ export class DataService {
     return this._http.post('https://api.random.org/json-rpc/1/invoke', JSON.stringify(data));
   }
 
-  resetWeek$(): Observable<any> {
-
-
-
+  resetWeek(): any {
     this.allUsers$()
-
-    return new Observable(observer => {
-
+    .take(1)
+    .map((allUsers) => {
+      return _.each(allUsers, (userData: User) => {
+        allUsers[userData.uid].highScore = 0;
+      });
+    })
+    .subscribe({
+      next: (allUsers) => {
+        this.database.ref('users/').update(allUsers);
+      }
     });
   }
 
-
+  allQuestions$(): Observable<any> {
+    return new Observable(observer => {
+      this.database.ref(`questions`).on('value', (snapshot) => {
+        observer.next(snapshot.val());
+      });
+    });
+  }
 }

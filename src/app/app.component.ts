@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { ROUTER_DIRECTIVES } from '@angular/router';
-import { AuthService } from "./shared/";
+import { DatabaseService } from "./shared/";
 
 declare var firebase: any;
 
@@ -17,15 +17,17 @@ export class AppComponent implements OnInit {
   protected changeDetectorInterval: any;
 
   constructor(
-    private _authService: AuthService,
+    private _databaseService: DatabaseService,
     private _changeDetectorRef: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
+    this._databaseService.initConfigData();
+    this._databaseService.initializeApp();
+
   	this._changeDetectorRef.detach();
   	this.changeDetectorInterval = setInterval(() => {
       this._changeDetectorRef.detectChanges();
     }, 500);
-
   }
 }
