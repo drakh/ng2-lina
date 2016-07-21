@@ -2,66 +2,89 @@
   <img src="./img/admin.png" alt="Admin" class="admin">
 </h1>
 
-<div class="col-xs-12 col-md-offset-2 col-md-8">
+<div class="col-xs-12 col-md-offset-2 col-md-8" style="margin-bottom: 50px">
   <div class="row">
-    <div class="col-xs-12 col-md-6">
-      <h3>Losovanie (top score: {{topScore}})</h3>      
-      <button
-        (click)="onDraw()"
-        class="btn btn-deafult">{{ drawResult == undefined ? 'Losovať' : 'Losovať znova' }}</button>
-      <br>
-      <div *ngIf="topScoreUsers !== undefined && drawResult != undefined">
-        <h4>Výsledok:</h4>
-        <table id="draw-result">
-          <tr>
-            <th>Meno:</th>
-            <td>{{topScoreUsers[drawResult]?.displayName}}</td>
-          </tr>
-          <tr>
-            <th>Email:</th>
-            <td>{{topScoreUsers[drawResult]?.email}}</td>
-          </tr>
-        </table>
-      </div>
-    </div>
-    <div class="col-xs-12 col-md-6">
-      <h3>Zoznam hráčov</h3>
-      <div id="users-list-container">
-        <div class="list-group" *ngIf="users !== undefined">
-          <a
-            (click)="onUserSelect($event)"
-            *ngFor="let user of users"
-            [attr.data-uid]="user.uid"
-            class="list-group-item">{{user.displayName}} - {{user.highScore}}</a>
+    <ul class="nav nav-tabs" role="tablist" id="admin-tabs">
+      <li role="presentation" class="active">
+        <a href="#users" aria-controls="users" role="tab" data-toggle="tab">Hráči</a>
+      </li>
+      <li role="presentation">
+        <a href="#questions" aria-controls="questions" role="tab" data-toggle="tab">Otázky</a>
+      </li>
+    </ul>
+
+    <div class="tab-content">
+      <div role="tabpanel" class="tab-pane active" id="users">
+        <div class="col-xs-12 col-md-6">
+          <h3>Zoznam hráčov</h3>
+          <div id="users-list-container">
+            <div class="list-group" *ngIf="users !== undefined">
+              <a
+                (click)="onUserSelect($event)"
+                *ngFor="let user of users"
+                [attr.data-uid]="user.uid"
+                class="list-group-item">{{user.displayName}} - {{user.highScore}}</a>
+            </div>
+          </div>
+
+          <button (click)="onResetWeek()" class="btn btn-deafult">Reset score</button>
+
+          <div id="user-detail" *ngIf="selectedUser">
+            <div class="thumbnail">
+              <img [src]="selectedUser?.photoURL" alt="">
+              <div class="caption">
+                <h3>{{selectedUser?.displayName}}: {{selectedUser?.highScore}}</h3>
+                <p>{{selectedUser?.email}}</p>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-
-      <button
-        (click)="onResetWeek()"
-        class="btn btn-deafult">Reset score</button>
-
-      <div id="user-detail" *ngIf="selectedUser">
-        <div class="thumbnail">
-          <img [src]="selectedUser?.photoURL" alt="">
-          <div class="caption">
-            <h3>{{selectedUser?.displayName}}: {{selectedUser?.highScore}}</h3>
-            <p>{{selectedUser?.email}}</p>
+        <br>
+        <div class="col-xs-12 col-md-6">
+          <h3>Losovanie (top score: {{topScore}})</h3>      
+          <button
+            (click)="onDraw()"
+            class="btn btn-deafult">{{ drawResult == undefined ? 'Losovať' : 'Losovať znova' }}</button>
+          <br>
+          <div *ngIf="topScoreUsers !== undefined && drawResult != undefined">
+            <h4>Výsledok:</h4>
+            <table id="draw-result">
+              <tr>
+                <th>Meno:</th>
+                <td>{{topScoreUsers[drawResult]?.displayName}}</td>
+              </tr>
+              <tr>
+                <th>Email:</th>
+                <td>{{topScoreUsers[drawResult]?.email}}</td>
+              </tr>
+            </table>
           </div>
         </div>
       </div>
-    </div>
-  </div>
-  <hr>
-
-  <div class="row">
-    <div class="col-xs-12 col-md-6"></div>
-    <div class="col-xs-12 col-md-6">
-      <h3>Otázky <small>zoradené podľa obtiažnosti</small></h3>
-      <div id="questions-list-container">
-        <div class="list-group" *ngIf="questions !== undefined">
-          <a
-            *ngFor="let question of questions"
-            class="list-group-item">{{question.timesFailed}} - {{question.question}}</a>
+      <div role="tabpanel" class="tab-pane" id="questions">
+        <div class="col-xs-12">
+          <h3>Otázky <small>zoradené podľa obtiažnosti</small></h3>
+        </div>
+        <div
+          [class.col-xs-12]="selectedQuestion"
+          [class.col-md-6]="selectedQuestion"
+          [class.col-xs-12]="!selectedQuestion"
+          >      
+          <div id="questions-list-container">
+            <div class="list-group" *ngIf="questions !== undefined">
+              <lina-question-row
+                *ngFor="let question of questions"
+                (selectQuestion)="onQuestionSelect($event)"
+                [isActive]="selectedQuestion?.id == question.id"
+                [question]="question"></lina-question-row>
+            </div>
+          </div>
+          <button (click)="onResetTimesFailed()" class="btn btn-deafult">Reset timesFailed</button>
+        </div>
+        <div
+          class="col-xs-12 col-md-6"
+          [hidden]="!selectedQuestion">
+          <lina-question-detail></lina-question-detail>
         </div>
       </div>
     </div>

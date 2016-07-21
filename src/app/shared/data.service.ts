@@ -55,11 +55,10 @@ export class DataService {
     });
   }
 
-  postCorrectAnswer(questionId: string, correctAnswer: number): Observable<any> {
+  updateCorrectAnswer$(questionId: string, correctAnswer: number): Observable<any> {
     return new Observable(observer => {
       this.database.ref().child(`answers/${questionId}`).set(correctAnswer)
         .then(() => {
-          console.log(`Saved correct answer ${correctAnswer} for question with key ${questionId}.`);
           observer.complete();
         })
         .catch(() => {
@@ -158,6 +157,14 @@ export class DataService {
     });
   }
 
+  updateQuestion$(questionId: string, questionData: Question): Observable<any> {
+    return new Observable(observer => {
+      this.database.ref(`questions/${questionId}`)
+                      .update(questionData)
+                        .then(() => {observer.complete();});
+    });
+  }
+
   randomNumber$(numberOfContestants: number): Observable<any> {
 
     const data = {
@@ -191,9 +198,32 @@ export class DataService {
     });
   }
 
+  resetTimesFailed() {
+    this.allQuestions$()
+    .take(1)
+    .map((allQuestions) => {
+      return _.each(allQuestions, (questionData: Question, key: string) => {
+        allQuestions[key].timesFailed = 0;
+      });
+    })
+    .subscribe({
+      next: (allQuestions) => {
+        this.database.ref('questions/').update(allQuestions);
+      }
+    });
+  }
+
   allQuestions$(): Observable<any> {
     return new Observable(observer => {
       this.database.ref(`questions`).on('value', (snapshot) => {
+        observer.next(snapshot.val());
+      });
+    });
+  }
+
+  allAnswers$(): Observable<any> {
+    return new Observable(observer => {
+      this.database.ref(`answers`).on('value', (snapshot) => {
         observer.next(snapshot.val());
       });
     });

@@ -20,7 +20,7 @@
 }
 
 #questions-list-container {
-  max-height: 180px;
+  max-height: 390px;
   overflow-y: scroll;
   margin-bottom: 15px;
 }
@@ -37,3 +37,11 @@
   .thumbnail .caption {
     color: #fff;
   }
+
+.nav-tabs > li:hover > a,
+.nav-tabs > li.active > a {
+  color: #555;
+}
+.nav-tabs > li > a {
+  color: #fff;
+}

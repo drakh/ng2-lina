@@ -1,18 +1,22 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { DataService, User, Question } from '../shared/';
 import { Response } from '@angular/http';
+import { QuestionDetailComponent } from './question/question-detail/'
+import { QuestionRowComponent } from './question/question-row/'
 
 import  'rxjs/Rx';
 import { Observable } from "rxjs/Observable";
 
 declare var _: any;
+declare var jQuery: any;
 
 @Component({
   moduleId: module.id,
-  selector: 'app-admin-screen',
+  selector: 'lina-admin-screen',
   templateUrl: 'admin-screen.component.html',
-  styleUrls: ['admin-screen.component.css']
+  styleUrls: ['admin-screen.component.css'],
+  directives: [QuestionRowComponent, QuestionDetailComponent]
 })
 export class AdminScreenComponent implements OnInit {
 
@@ -23,7 +27,11 @@ export class AdminScreenComponent implements OnInit {
   private drawResult: number;
   private randomNumbers: Array<number>;
 
+  private answers: Array<number>;
   private questions: Array<Question>;
+  private selectedQuestion: Question;
+
+  @ViewChild(QuestionDetailComponent) questonDetail: QuestionDetailComponent;
 
   constructor(
     private _router: Router,
@@ -33,6 +41,12 @@ export class AdminScreenComponent implements OnInit {
   ngOnInit() {
     this.initUsers();
     this.initQuestions();
+    this.initAnswers();
+
+    jQuery('#admin-tabs a').click(function (e) {
+      e.preventDefault()
+      jQuery(this).tab('show');
+    })
   }
 
   onNavigate(destination: String) {
@@ -83,7 +97,21 @@ export class AdminScreenComponent implements OnInit {
     this._dataService.allQuestions$()
       .subscribe({
         next: (allQuestions: Array<Question>) => {
+          _.map(allQuestions, (questionData, id) => {
+            questionData.id = id;
+            allQuestions[id] = questionData;
+          });
           this.questions = _.sortBy(allQuestions, 'timesFailed').reverse();
+        },
+        error: error => console.error(error),
+      });
+  }
+
+  initAnswers() {
+    this._dataService.allAnswers$()
+      .subscribe({
+        next: (allAnswers) => {
+          this.answers = allAnswers;
         },
         error: error => console.error(error),
       });
@@ -93,9 +121,20 @@ export class AdminScreenComponent implements OnInit {
     this.selectedUser = _.find(this.users, (user: User) => user.uid == event.target.dataset.uid);
   }
 
+  onQuestionSelect(questionId) {
+    this.selectedQuestion = _.find(this.questions, (question: Question) => question.id == questionId);
+    this.questonDetail.setQuestion(questionId, this.selectedQuestion, this.answers[questionId]);
+  }
+
   onResetWeek() {
     if (window.confirm("Naozaj chceš všetkým resetovať body?")) { 
       this._dataService.resetWeek();
+    }
+  }
+
+  onResetTimesFailed() {
+    if (window.confirm("Naozaj chceš resetovať počítadlo neúspešných odpovedí pre všetky otázky?")) { 
+      this._dataService.resetTimesFailed();
     }
   }
 

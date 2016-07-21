@@ -1,0 +1,83 @@
+<div class="row">
+  
+  <form [ngFormModel]="editQuestionForm" (ngSubmit)="onEditQuestionFormSubmit()">
+
+    <div class="input">
+      <div class="col-xs-12">
+        <textarea [ngFormControl]="editQuestionForm.find('question')" rows="5" cols="40">
+        </textarea>
+      </div>
+    </div>
+    
+    <div class="input">
+      <div class="col-xs-12">
+        <input
+          [ngFormControl]="editQuestionForm.find('timesFailed')"
+          type="number"
+          name="timesFailed">
+      </div>
+    </div>
+
+    <radio-group [(ngModel)]="correctAnswer">
+      <div class="input">
+        <div class="col-xs-11">
+          <input
+            [ngFormControl]="editQuestionForm.find('answer1')"
+            [class.correct-answer]="correctAnswer == '1'"
+            type="text"
+            name="answer1">
+        </div>
+        <div class="col-xs-1">
+          <input type="radio" value="1">
+        </div>
+      </div>
+
+      <div class="input">
+        <div class="col-xs-11">
+          <input
+            [ngFormControl]="editQuestionForm.find('answer2')"
+            [class.correct-answer]="correctAnswer == '2'"
+            type="text"
+            name="answer2">
+        </div>
+        <div class="col-xs-1">
+          <input type="radio" value="2">
+        </div>
+      </div>
+
+      <div class="input">
+        <div class="col-xs-11">
+          <input
+            [ngFormControl]="editQuestionForm.find('answer3')"
+            [class.correct-answer]="correctAnswer == '3'"
+            type="text"
+            name="answer3">
+        </div>
+        <div class="col-xs-1">
+          <input type="radio" value="3">
+        </div>
+      </div>
+
+      <div class="input">
+        <div class="col-xs-11">
+          <input
+            [ngFormControl]="editQuestionForm.find('answer4')"
+            [class.correct-answer]="correctAnswer == '4'"
+            type="text"
+            name="answer4">
+        </div>
+        <div class="col-xs-1">
+          <input type="radio" value="4">
+        </div>
+      </div>
+    </radio-group>
+
+    <input
+      [disabled]="!editQuestionForm.valid || correctAnswer == undefined"
+      type="submit"
+      value="Uložiť zmeny"
+      class="btn"
+    />
+  </form>
+</div>
+

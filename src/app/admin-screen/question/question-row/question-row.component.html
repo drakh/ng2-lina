@@ -1,0 +1,5 @@
+<button
+	type="button"
+	class="list-group-item"
+	[class.active]="isActive"
+	(click)="onQuestionSelect()">{{question.timesFailed}} <small>- {{question.question}}</small></button>

@@ -22,12 +22,17 @@ export class AppComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.initCustomChangeDetector(500);
     this._databaseService.initConfigData();
-    this._databaseService.initializeApp();
+    this._databaseService.initializeApp(); 	  
+  }
 
-  	this._changeDetectorRef.detach();
-  	this.changeDetectorInterval = setInterval(() => {
-      this._changeDetectorRef.detectChanges();
-    }, 500);
+  initCustomChangeDetector(refreshRate: number) {
+    if(/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+      this._changeDetectorRef.detach();
+      this.changeDetectorInterval = setInterval(() => {
+        this._changeDetectorRef.detectChanges();
+      }, refreshRate);
+    } 
   }
 }

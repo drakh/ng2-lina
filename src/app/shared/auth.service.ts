@@ -18,45 +18,6 @@ export class AuthService {
     this.database = firebase.database();
   }
 
-  // signinUserFB() {
-
-  //   return new Observable(observer => {
-  //     const fbLoginProvider = new firebase.auth.FacebookAuthProvider();
-
-  //     firebase.auth().signInWithPopup(fbLoginProvider).then((result) => {
-
-  //       this._dataService.checkIfUserExist(result.user.uid).then((snapshot) => {
-
-  //         if(snapshot.val()) {
-  //           this.user = new User(
-  //             snapshot.val().uid,
-  //             snapshot.val().displayName,
-  //             snapshot.val().email,
-  //             snapshot.val().photoURL,
-  //             snapshot.val().highScore
-  //           );
-  //         }
-  //         else {
-  //           this.user = new User(
-  //             result.user.uid,
-  //             result.user.displayName,
-  //             result.user.email,
-  //             result.user.photoURL,
-  //             0
-  //           );
-
-  //           this._dataService.saveNewUser( this.getLoggedUserDataAll() );
-  //         }
-
-  //         observer.next(this.getLoggedUserDataAll());
-  //       });
-  //     })
-  //     .catch(function(error) {
-  //       observer.error(error);
-  //     });
-  //   });
-  // }
-
   signinUserFB_2$(): BehaviorSubject<User> {
 
     this.userSubject = new BehaviorSubject<User>(this.user);
