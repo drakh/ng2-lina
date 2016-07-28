@@ -123,13 +123,13 @@ h1 img {
     .button-list button:hover {
       background-position: center -52px;
     }
-    .button-list button.correct {
+    .button-list .correct button {
       background-position: center -104px ;
     }
-    .button-list button.wrong {
+    .button-list .wrong button {
       background-position: center bottom;
     }
-    .button-list button.loading {
+    .button-list .loading button {
       animation: loading 500ms steps(2) 0s infinite;
     }
     .button-list button.margined {
@@ -154,10 +154,10 @@ h1 img {
       .button-list button:hover {
         background-position: center -43px;
       }
-      .button-list button.correct {
+      .button-list .correct button {
         background-position: center -86px ;
       }
-      .button-list button.wrong {
+      .button-list .wrong button {
         background-position: center bottom;
       }
 

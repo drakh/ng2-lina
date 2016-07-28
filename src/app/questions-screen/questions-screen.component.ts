@@ -1,9 +1,11 @@
-import { Component, ViewChild, OnInit } from '@angular/core';
+import { Component, ViewChild, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, ControlGroup, Validators } from "@angular/common";
 import { RADIO_GROUP_DIRECTIVES } from "ng2-radio-group";
-import { DataService, ProgressService, Question } from '../shared/';
-import { QuestionComponent } from '../question/';
+import { DataService, ProgressService, Question, Answer } from '../shared/';
+import { AnswerComponent } from './answer';
 import { Router } from '@angular/router';
+import { Response } from '@angular/http';
+import { environment } from '../';
 
 import  'rxjs/Rx';
 import { Observable } from "rxjs/Observable";
@@ -16,22 +18,15 @@ declare var jQuery: any;
   selector: 'lina-questions-screen',
   templateUrl: 'questions-screen.component.html',
   styleUrls: ['questions-screen.component.css'],
-  directives: [RADIO_GROUP_DIRECTIVES, QuestionComponent]
+  directives: [RADIO_GROUP_DIRECTIVES, AnswerComponent]
 })
-export class QuestionsScreenComponent implements OnInit {
+export class QuestionsScreenComponent implements OnInit, OnDestroy {
 
   addQuestionForm: ControlGroup;
   correctAnswer: string;
 
   currentQuestion: Question;
   questionList: Array<Question>;
-
-  private currentQuestionId: string;
-  private currentQuestionText: string;
-  private currentAnswer1Text: string;
-  private currentAnswer2Text: string;
-  private currentAnswer3Text: string;
-  private currentAnswer4Text: string;
 
   private debugMessages: Array<string>;
 
@@ -46,6 +41,10 @@ export class QuestionsScreenComponent implements OnInit {
   private changeDetected: boolean;
 
   private changeDetectorInterval: any;
+  private answersOrder: Array<number>;
+  private answers: Array<Answer>;
+
+  private timerInSeconds: number;
 
   constructor(
     private _router: Router,
@@ -54,16 +53,10 @@ export class QuestionsScreenComponent implements OnInit {
     private _progressService: ProgressService
   ) {
     this.debugMessages = [];
+    this.timerInSeconds = environment.production ? 20 : 60;
   }
 
   ngOnInit() {
-    // this.addQuestionForm = this._fb.group({
-    //   question: ['', Validators.required],
-    //   answer1: ['', Validators.required],
-    //   answer2: ['', Validators.required],
-    //   answer3: ['', Validators.required],
-    //   answer4: ['', Validators.required]
-    // });
 
     this.questionVisible = false;
     this.canAnswer = true;
@@ -73,35 +66,11 @@ export class QuestionsScreenComponent implements OnInit {
     this.onGetQuestionList();
   }
 
-  // onAddQuestionFormSubmit() {
-  //   const questionData: Question = this.addQuestionForm.value;
-  //   questionData.timesFailed = 0;
-
-  //   this._dataService.postQuestionData(questionData)
-  //     .subscribe({
-  //       next: questionId => this.onSaveCorrectAnswer(questionId),
-  //       error: error => console.error(error),
-  //       complete: () => this.clearQuestionForm()
-  //     });
-  // }
-
-  // clearQuestionForm() {
-  //   this.correctAnswer = null;
-
-  //   _.each(this.addQuestionForm.controls, (control) => {
-  //     control.updateValue('');
-  //     control.setErrors(null);
-  //   });
-  // }
-
-  // onSaveCorrectAnswer(questionId: string) {
-  //   this._dataService.postCorrectAnswer(questionId, parseInt(this.correctAnswer))
-  //     .subscribe({
-  //       error: error => console.error(error)
-  //     });
-  // }
-
-
+  ngOnDestroy() {
+    if(this.questionTimerSubscription) {
+      this.questionTimerSubscription.unsubscribe();
+    }
+  }
 
   onGameOver(howFinished: string) {
     if(howFinished === 'wrong') {
@@ -134,20 +103,20 @@ export class QuestionsScreenComponent implements OnInit {
     });
   }
 
-  onCheckAnswer($event) {
+  onSelectAnswer(clickedButton) {
     if(!this.canAnswer) {
       return;
     }
 
     this.canAnswer = false;
 
-    this.lastClickedButton = $event.target;
+    this.lastClickedButton = clickedButton;
 
     let answer = this.lastClickedButton.dataset.answer;
     let actualClassName = this.lastClickedButton.className;
     this.lastClickedButton.className = `loading`;
 
-    this._dataService.checkAnswer(this.currentQuestionId, answer)
+    this._dataService.checkAnswer(this.currentQuestion.id, answer)
     .subscribe({
       next: (result) => {
 
@@ -177,7 +146,7 @@ export class QuestionsScreenComponent implements OnInit {
     if(answeredResult === 'correct') {
       this._progressService.increaseIngameHighScore();
       setTimeout(() => {
-        this.resetClickedButton();
+        this.resetClickedButton();        
         this.setNextQuestionData();
       }, timeOut);
     }
@@ -195,6 +164,13 @@ export class QuestionsScreenComponent implements OnInit {
     }
   }
 
+  setAnswers() {
+    const answersOrder: Array<number> = _.shuffle([1, 2, 3, 4]);
+    this.answers = _.map(answersOrder, (num) => {
+      return new Answer(num, this.currentQuestion[`answer${num}`]);
+    });
+  }
+
   setNextQuestionData() {
     if(this.questionList.length < 1) {
       this.onGameOver('win');
@@ -203,14 +179,9 @@ export class QuestionsScreenComponent implements OnInit {
     this.questionVisible = false;
 
     const questionIndex = Math.floor(Math.random() * this.questionList.length);
-    this.currentQuestion = this.questionList.splice(questionIndex, 1)[0];    
 
-    this.currentQuestionId = this.currentQuestion.id;
-    this.currentQuestionText = this.currentQuestion.question;
-    this.currentAnswer1Text = this.currentQuestion.answer1;
-    this.currentAnswer2Text = this.currentQuestion.answer2;
-    this.currentAnswer3Text = this.currentQuestion.answer3;
-    this.currentAnswer4Text = this.currentQuestion.answer4;
+    this.currentQuestion = this.questionList.splice(questionIndex, 1)[0];
+    this.setAnswers();
 
     if(this.questionTimerSubscription) {
       this.questionTimerSubscription.unsubscribe();
@@ -223,9 +194,9 @@ export class QuestionsScreenComponent implements OnInit {
 
   initTimer() {
 
-    this.remainingTime = 20;
+    this.remainingTime = this.timerInSeconds;
     this.questionTimer$ = Observable.interval(1000);
-    this.questionTimerSubscription = this.questionTimer$.take(20).subscribe({
+    this.questionTimerSubscription = this.questionTimer$.take(this.timerInSeconds).subscribe({
       next: () => {
         --this.remainingTime;
       },

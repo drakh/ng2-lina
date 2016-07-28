@@ -49,16 +49,17 @@ export class GameoverScreenComponent implements OnInit {
     this.isResultKnown = false;
 
     this.ingameHighScore = this._progressService.getIngameHighScore();
-    // this.savedHighScore = this._progressService.getSavedHighscore();
 
-    this._progressService.loggedUser$().subscribe({
+    this._progressService.loggedUser$().take(1).subscribe({
       next: (user: User) => {
         if(!user || user.highScore === undefined) {
           return;
         }
 
         this.savedHighScore = user.highScore;
+
         this.checkIfNewHighScore();
+        
         this.ingameHighScoreString = this.setScoreString(this.ingameHighScore);
         this.savedHighScoreString = this.setScoreString(this.savedHighScore);
       }
@@ -70,7 +71,6 @@ export class GameoverScreenComponent implements OnInit {
   }
 
   checkIfNewHighScore() {
-
     if(this.savedHighScore < this.ingameHighScore) {
       this.isNewHighScore = true;
       this._progressService.setQuestionProgress();

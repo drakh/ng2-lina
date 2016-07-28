@@ -60,7 +60,6 @@ export class IntroScreenComponent implements OnInit, OnDestroy {
   }
 
   onNavigate(destination: String) {
-    console.log(`Intro navigating to ${destination} screen.`);
     this.router.navigate([`/${destination}`]);
   }
 

@@ -5,3 +5,4 @@ export * from './database.service';
 export * from './progress.service';
 export * from './question.model';
 export * from './user.model';
+export * from './answer.model';

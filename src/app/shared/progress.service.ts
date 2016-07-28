@@ -42,7 +42,6 @@ export class ProgressService {
 
   loggedUser$(): BehaviorSubject<User> {
     const userSubject: BehaviorSubject<User> = this._authService.getLoggedUserDataAll$();
-    console.log(userSubject);
     return userSubject;
   }
 

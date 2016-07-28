@@ -1,87 +1,39 @@
-<!-- 
-<form [ngFormModel]="addQuestionForm" (ngSubmit)="onAddQuestionFormSubmit()">
-  <div class="input">
-    <label for="question">Title</label>
-    <textarea [ngFormControl]="addQuestionForm.find('question')" rows="5" cols="40">
-    </textarea>
-  </div>
-
-  <radio-group [(ngModel)]="correctAnswer">
-    <div class="input">
-      <label for="answer-1">Answer 1</label>
-      <input type="text" name="answer1" [ngFormControl]="addQuestionForm.find('answer1')">
-      <input type="radio" value="1">
-    </div>
-
-    <div class="input">
-      <label for="answer-2">Answer 2</label>
-      <input type="text" name="answer2" [ngFormControl]="addQuestionForm.find('answer2')">
-      <input type="radio" value="2">
-    </div>
-
-    <div class="input">
-      <label for="answer-3">Answer 3</label>
-      <input type="text" name="answer3" [ngFormControl]="addQuestionForm.find('answer3')">
-      <input type="radio" value="3">
-    </div>
-
-    <div class="input">
-      <label for="answer-4">Answer 4</label>
-      <input type="text" name="answer4" [ngFormControl]="addQuestionForm.find('answer4')">
-      <input type="radio" value="4">
-    </div>
-  </radio-group>
-
-  <input
-    [disabled]="!addQuestionForm.valid || correctAnswer == undefined"
-    type="submit"
-    value="Add New Question"
-  />
-</form>
--->
-
-<!-- <div style="color:#fff; max-height:300px; overflow-y: scroll;">
-  <p *ngFor="let message of debugMessages">{{message}}</p>
-</div>
-
-<lina-question
-  [id]="currentQuestionId"
-  [answer1]="currentAnswer1Text"
-  [answer2]="currentAnswer2Text"
-  [answer3]="currentAnswer3Text"
-  [answer4]="currentAnswer4Text"
-  [question]="currentQuestionText"
-
-  (onAnswer)="onAnswer($event)"
-  (onTimeRunOut)="onGameOver('timeup')">
-</lina-question> -->
-
-<div style="position:absolute;color:#fff; overflow: visible; pointer-events: none">
-  <p style="font-family: 'Lucida Console', 'Courier New', monospace;" *ngFor="let message of debugMessages">{{message}}</p>
-</div>
-
-<div id="question" data-question-id="currentQuestionId" *ngIf="questionVisible">
-  <div *ngIf="currentQuestionText" class="question-text">
+<div id="question" data-question-id="currentQuestion.id" *ngIf="questionVisible">
+  <div *ngIf="currentQuestion?.question" class="question-text">
     <table style="width: 100%" class="hidden-xs">
       <tr height="100">
         <td style="font-size:35px;font-weight:bold" width="120">{{remainingTime}}</td>
-        <td style="padding-left:20px;padding-right:50px">{{currentQuestionText}}</td>
+        <td style="padding-left:20px;padding-right:50px">{{currentQuestion?.question}}</td>
       </tr>
     </table>
     <div class="hidden-sm hidden-md hidden-lg">
       <div style="font-size:35px;font-weight:bold">{{remainingTime}}</div>
-      <div>{{currentQuestionText}}</div>
+      <div>{{currentQuestion?.text}}</div>
     </div>
   </div>
 
   <div class="button-group">
     <div class="button-list button-list-answers">
-      <button *ngIf="currentAnswer1Text" data-answer="1" (click)="onCheckAnswer($event)">{{currentAnswer1Text}}</button>
-      <button *ngIf="currentAnswer2Text" data-answer="2" (click)="onCheckAnswer($event)">{{currentAnswer2Text}}</button>
+      <lina-answer
+        answerText="{{answers[0].text}}"
+        [attr.data-answer]="answers[0].number"
+        (selectAnswer)=onSelectAnswer($event)></lina-answer>
+
+      <lina-answer
+        answerText="{{answers[1].text}}"
+        [attr.data-answer]="answers[1].number"
+        (selectAnswer)=onSelectAnswer($event)></lina-answer>
     </div>
     <div class="button-list button-list-answers">
-      <button *ngIf="currentAnswer3Text" data-answer="3" (click)="onCheckAnswer($event)">{{currentAnswer3Text}}</button>
-      <button *ngIf="currentAnswer4Text" data-answer="4" (click)="onCheckAnswer($event)">{{currentAnswer4Text}}</button>
+      <lina-answer
+        answerText="{{answers[2].text}}"
+        [attr.data-answer]="answers[2].number"
+        (selectAnswer)=onSelectAnswer($event)></lina-answer>
+
+      <lina-answer
+        answerText="{{answers[3].text}}"
+        [attr.data-answer]="answers[3].number"
+        (selectAnswer)=onSelectAnswer($event)></lina-answer>
     </div>
   </div>
 </div>
